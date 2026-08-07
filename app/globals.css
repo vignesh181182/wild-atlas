@@ -1,0 +1,1718 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   Wild Atlas — application layout.
+
+   Every value here comes from the Classical design system (styles/classical.css);
+   this file only arranges its tokens into the screens. The design was drawn at a
+   fixed 1194×834, so anything that had to become fluid for a real browser window
+   is marked with a note.
+   ───────────────────────────────────────────────────────────────────────── */
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 15px;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* ── shell ───────────────────────────────────────────────────────────── */
+
+.app {
+  display: flex;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* ── sidebar ─────────────────────────────────────────────────────────── */
+
+.sidebar {
+  width: 246px;
+  flex: none;
+  padding: var(--space-6) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  overflow: auto;
+  border-right: 1px solid var(--color-divider);
+}
+
+.brand {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 24px;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.surprise-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 17px;
+  cursor: pointer;
+  text-align: left;
+}
+.surprise-btn:hover {
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+}
+.surprise-btn[data-unread='true'] {
+  border-color: var(--color-accent);
+  background: var(--color-accent-100);
+  color: var(--color-accent-700);
+}
+/* On screen right now — reads as selected whether or not it is still unread. */
+.surprise-btn[aria-current='true'] {
+  border-color: var(--color-accent);
+  background: var(--color-accent-100);
+  color: var(--color-accent-700);
+  box-shadow: inset 0 0 0 1px var(--color-accent);
+}
+.surprise-dot {
+  margin-left: auto;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+
+.sidebar-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-height: 0;
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-label {
+  font-family: var(--font-heading);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+}
+
+.link-btn {
+  margin-left: auto;
+  border: 0;
+  background: transparent;
+  color: var(--color-accent);
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 4px 2px;
+}
+.link-btn:hover {
+  color: var(--color-accent-700);
+}
+
+.group-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.group-row {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.group-btn {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 var(--space-2);
+  border: 0;
+  background: transparent;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  cursor: pointer;
+  text-align: left;
+}
+.group-btn:hover {
+  background: color-mix(in srgb, var(--color-text) 5%, transparent);
+}
+.group-btn[aria-current='true'] {
+  background: var(--color-accent-100);
+  color: var(--color-accent-700);
+}
+.group-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.group-count {
+  margin-left: auto;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-accent-700);
+}
+
+.icon-btn {
+  width: 34px;
+  height: 44px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  color: var(--color-neutral-600);
+  cursor: pointer;
+}
+.icon-btn:hover {
+  color: var(--color-accent);
+}
+.icon-btn.is-danger:hover {
+  color: #8a2f2f;
+}
+
+.rename-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  background: #fff;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  caret-color: var(--color-accent);
+}
+
+.add-group {
+  display: flex;
+  gap: 6px;
+  margin-top: var(--space-1);
+}
+.add-group input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 11px;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 13px;
+  caret-color: var(--color-accent);
+}
+.add-group button {
+  width: 44px;
+  min-height: 44px;
+  flex: none;
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-accent);
+  font-family: var(--font-heading);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+.add-group button:hover {
+  background: color-mix(in srgb, var(--color-accent) 14%, transparent);
+}
+
+/* ── main column ─────────────────────────────────────────────────────── */
+
+.main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.search {
+  position: relative;
+  flex: 1;
+  max-width: 600px;
+}
+
+.search-field {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 0 11px;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background: transparent;
+}
+.search-field:focus-within {
+  border-color: var(--color-accent);
+}
+.search-field input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  caret-color: var(--color-accent);
+}
+.search-field input:focus {
+  outline: none;
+}
+.search-clear {
+  border: 0;
+  background: transparent;
+  color: var(--color-neutral-600);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.suggestions {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  right: 0;
+  z-index: 6;
+  padding: 6px;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-divider);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+}
+.suggestion {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 0 var(--space-2);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  cursor: pointer;
+  text-align: left;
+}
+.suggestion:hover,
+.suggestion[data-active='true'] {
+  background: var(--color-accent-100);
+}
+.suggestion-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.suggestion-kind {
+  margin-left: auto;
+  flex: none;
+  font-size: 11px;
+  color: var(--color-neutral-600);
+  font-style: italic;
+}
+
+/* ── views ───────────────────────────────────────────────────────────── */
+
+.view {
+  flex: 1;
+  overflow: auto;
+  padding: var(--space-6);
+}
+
+.view-centred {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  padding: 46px;
+  text-align: center;
+}
+.view-centred .headline {
+  font-family: var(--font-heading);
+  font-size: 30px;
+}
+.view-centred .lede {
+  font-size: 15px;
+  color: var(--color-neutral-700);
+  font-style: italic;
+  max-width: 420px;
+  text-wrap: pretty;
+}
+.view-centred .footnote {
+  font-size: 13px;
+  color: var(--color-neutral-600);
+  margin-top: var(--space-2);
+}
+
+.page-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  flex-wrap: wrap;
+}
+.page-title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 34px;
+  letter-spacing: -0.01em;
+}
+.page-meta {
+  font-size: 13px;
+  color: var(--color-neutral-600);
+  font-style: italic;
+  font-variant-numeric: tabular-nums;
+}
+.page-head .btn-quiet {
+  margin-left: auto;
+}
+
+.btn-quiet {
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-neutral-700);
+  font-family: var(--font-body);
+  font-size: 13px;
+  cursor: pointer;
+}
+.btn-quiet:hover {
+  background: color-mix(in srgb, var(--color-text) 6%, transparent);
+}
+
+.btn-accent {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-accent);
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 16px;
+  cursor: pointer;
+}
+.btn-accent:hover {
+  background: color-mix(in srgb, var(--color-accent) 14%, transparent);
+}
+.btn-accent[data-filled='true'] {
+  background: color-mix(in srgb, var(--color-accent) 16%, transparent);
+}
+
+/* ── photo plates ────────────────────────────────────────────────────── */
+
+/* `.plate` comes from the design system: sepia wash, thick paper mount,
+   hairline outline. These modifiers only set the size and hold the caption. */
+.plate {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  background: repeating-linear-gradient(45deg, #e3e0e0 0 12px, #eeecec 12px 24px);
+}
+.plate img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.plate-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 8px 10px;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: 10px;
+  line-height: 1.35;
+  color: var(--color-neutral-700);
+  background: linear-gradient(transparent, rgba(243, 242, 242, 0.92) 55%);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.plate-hero {
+  height: 430px;
+  border-width: 8px;
+}
+.plate-hero .plate-caption {
+  font-size: 12px;
+  padding: 14px;
+  /* Clear the gallery button sitting in the same corner. */
+  padding-right: 96px;
+}
+.plate-card {
+  height: 168px;
+}
+.plate-gallery {
+  height: 212px;
+}
+.plate-row {
+  width: 92px;
+  height: 62px;
+  flex: none;
+  border-width: 4px;
+}
+
+/* ── results grid ────────────────────────────────────────────────────── */
+
+/* The design fixed this at three columns inside its 1194px frame; auto-fill
+   keeps the same card width as the window grows or shrinks. */
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--space-6);
+}
+
+.result {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+.result:hover .plate {
+  outline-color: var(--color-accent);
+}
+.result-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.result-name > span:first-child {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 20px;
+}
+.result-sub {
+  font-size: 13px;
+  color: var(--color-neutral-700);
+  font-style: italic;
+}
+
+.pill-extinct {
+  font-family: var(--font-body);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border: 1px solid var(--color-accent);
+  border-radius: 3px;
+  color: var(--color-accent-700);
+  white-space: nowrap;
+}
+
+.saved-mark {
+  color: var(--color-accent);
+  flex: none;
+}
+
+.empty-note {
+  padding: 46px;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  text-align: center;
+  color: var(--color-neutral-700);
+  font-size: 15px;
+  font-style: italic;
+}
+
+/* ── icon buttons and their tooltips ─────────────────────────────────── */
+
+/* An icon says the thing faster than a word does, but only once you know
+   which icon it is. `data-tip` is the label, shown on hover and on keyboard
+   focus; `aria-label` carries the same words to a screen reader. */
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  padding: 0;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+}
+.btn-icon:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent-700);
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+}
+.btn-icon:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.btn-icon:disabled:hover {
+  border-color: var(--color-divider);
+  color: var(--color-text);
+  background: transparent;
+}
+.btn-icon.is-primary {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+[data-tip] {
+  position: relative;
+}
+[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute;
+  top: calc(100% + 7px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 40;
+  padding: 5px 9px;
+  border-radius: var(--radius-md);
+  background: var(--color-neutral-900);
+  color: var(--color-neutral-100);
+  font-family: var(--font-body);
+  font-size: 12px;
+  line-height: 1.35;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 110ms ease 80ms;
+}
+[data-tip]:hover::after,
+[data-tip]:focus-visible::after {
+  opacity: 1;
+}
+/* Near the right-hand edge a centred tooltip would be clipped by the scroll
+   box, so those ones hang to the left instead. */
+[data-tip][data-tip-place='left']::after {
+  left: auto;
+  right: 0;
+  transform: none;
+}
+[data-tip][data-tip-place='top']::after {
+  top: auto;
+  bottom: calc(100% + 7px);
+}
+@media (hover: none) {
+  /* Nothing hovers on a touch screen; a tooltip there is just a thing that
+     flashes when you tap. */
+  [data-tip]::after {
+    display: none;
+  }
+}
+
+/* ── a creature's page ───────────────────────────────────────────────── */
+
+/* The page reads top to bottom in one measure: see it, know what it is, take
+   the numbers, then where and when, then the prose. Reference material moves
+   into the rail so it never interrupts the reading. */
+
+/* No top padding: the section bar sticks to the top of this box, and a
+   padding strip above it is a gap that scrolling text shows through. The
+   first element carries the space instead. */
+.detail {
+  padding: 0 var(--space-6) 48px;
+  scroll-behavior: smooth;
+}
+.detail > .back-btn,
+.detail > .detail-eyebrow,
+.detail > .identity:first-child {
+  margin-top: var(--space-4);
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 var(--space-1);
+  border: 0;
+  background: transparent;
+  color: var(--color-accent);
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 15px;
+  cursor: pointer;
+}
+.back-btn:hover {
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+}
+
+/* Names the page when there is no back button above the title — the surprise
+   arrives here rather than being navigated to. */
+.detail-eyebrow {
+  font-family: var(--font-heading);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent-700);
+}
+
+/* ── identity ────────────────────────────────────────────────────────── */
+
+.identity {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: var(--space-6);
+  align-items: stretch;
+  margin-top: var(--space-3);
+}
+.identity .plate-hero {
+  height: auto;
+  aspect-ratio: 3 / 2;
+}
+
+.identity-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding-top: var(--space-1);
+}
+.detail-title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: clamp(34px, 3.6vw, 52px);
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.detail-sci {
+  margin: 0;
+  font-size: 17px;
+  color: var(--color-neutral-700);
+  font-style: italic;
+}
+
+/* Small facts that belong to the name itself: what kind of thing, what rank,
+   how it is faring. */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+}
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border: 1px solid var(--color-divider);
+  border-radius: 100px;
+  font-family: var(--font-heading);
+  font-size: 12.5px;
+  color: var(--color-neutral-700);
+  white-space: nowrap;
+}
+.tag-status[data-tone='risk'] {
+  border-color: var(--color-accent);
+  background: var(--color-accent-100);
+  color: var(--color-accent-700);
+}
+.tag-status[data-tone='gone'] {
+  border-color: var(--color-neutral-800);
+  background: var(--color-neutral-800);
+  color: var(--color-neutral-100);
+}
+
+/* The tone of a status is carried by weight, not colour — the palette here is
+   sepia and one amber, and a traffic light would be a foreign object. */
+.status-dot {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+}
+.status-dot[data-tone='risk'],
+.status-dot[data-tone='gone'] {
+  background: currentColor;
+}
+.status-dot[data-tone='watch'] {
+  background: linear-gradient(90deg, currentColor 50%, transparent 50%);
+}
+
+.identity-definition {
+  margin: var(--space-1) 0 0;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--color-neutral-800);
+  text-wrap: pretty;
+  max-width: 46ch;
+}
+.identity-aliases {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-neutral-600);
+}
+.identity-aliases span {
+  font-family: var(--font-heading);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent-700);
+  margin-right: 6px;
+}
+
+.detail-actions {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-top: auto;
+  padding-top: var(--space-2);
+}
+/* The gallery button, sitting in the corner of the photograph. */
+.plate-action {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 0 11px;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background: rgba(243, 242, 242, 0.93);
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+.plate-action:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent-700);
+}
+
+/* ── the figures ─────────────────────────────────────────────────────── */
+
+/* Whatever is known about the body of the thing, in one line of numerals.
+   Ruled cells rather than boxes: this is a page in a book, not a dashboard. */
+.figures {
+  /* Flex rather than equal columns: three facts should sit together at the
+     left, not stretch themselves across the whole page. */
+  display: flex;
+  flex-wrap: wrap;
+  margin: var(--space-6) 0 0;
+  border-top: 1px solid var(--color-text);
+  border-bottom: 1px solid var(--color-divider);
+}
+.figure {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 132px;
+  padding: var(--space-3) var(--space-6) var(--space-3) var(--space-4);
+  border-left: 1px solid var(--color-divider);
+}
+.figure:first-child {
+  border-left: 0;
+  padding-left: 0;
+}
+.figure dd {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(20px, 2vw, 27px);
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+.figure dt {
+  font-family: var(--font-heading);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+}
+
+/* ── the spine ───────────────────────────────────────────────────────── */
+
+/* A page this long needs to say where you are and what is left. */
+.section-nav {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
+  /* Full bleed: pulled out to the page's edges and padded back in, so nothing
+     scrolls past it down the sides. */
+  margin: 0 calc(-1 * var(--space-6)) var(--space-2);
+  padding: var(--space-2) var(--space-6);
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-divider);
+}
+.section-nav button {
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 100px;
+  background: transparent;
+  color: var(--color-neutral-700);
+  font-family: var(--font-heading);
+  font-size: 13px;
+  cursor: pointer;
+}
+.section-nav button:hover {
+  background: color-mix(in srgb, var(--color-text) 6%, transparent);
+}
+.section-nav button[data-active='true'] {
+  background: var(--color-accent-100);
+  color: var(--color-accent-700);
+}
+
+/* ── reading column and rail ─────────────────────────────────────────── */
+
+.detail-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: var(--space-8);
+  align-items: start;
+  margin-top: var(--space-4);
+}
+
+.section {
+  margin-top: var(--space-6);
+  scroll-margin-top: 56px;
+}
+.section:first-child {
+  margin-top: 0;
+}
+.section h3 {
+  margin: 0 0 var(--space-3);
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--color-text);
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 19px;
+}
+.section-note {
+  margin: -6px 0 var(--space-3);
+  font-size: 13px;
+  color: var(--color-neutral-600);
+  font-style: italic;
+  text-wrap: pretty;
+}
+
+.about-text {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.72;
+  max-width: 68ch;
+  text-wrap: pretty;
+}
+.about-text p {
+  margin: 0 0 var(--space-3);
+}
+.about-text p:last-child {
+  margin-bottom: 0;
+}
+
+/* The rail holds what you look up rather than what you read. */
+.detail-rail {
+  position: sticky;
+  top: 56px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+.rail-block h3 {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-heading);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+}
+.rail-note {
+  margin: var(--space-2) 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--color-neutral-600);
+  font-style: italic;
+  text-wrap: pretty;
+}
+
+/* ── lineage ─────────────────────────────────────────────────────────── */
+
+/* One branch of one very old tree: a thread with a bead on every rank. */
+.lineage {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.lineage-step {
+  position: relative;
+  padding-left: 18px;
+}
+/* The thread, drawn between the beads rather than through them. */
+.lineage-step::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 14px;
+  bottom: -4px;
+  width: 1px;
+  background: var(--color-divider);
+}
+.lineage-step:last-child::before {
+  display: none;
+}
+.lineage-step::after {
+  content: '';
+  position: absolute;
+  left: 1px;
+  top: 11px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1px solid var(--color-neutral-400);
+  background: var(--color-bg);
+}
+.lineage-step.is-here::after {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+}
+
+.lineage-step button,
+.lineage-step div {
+  display: block;
+  width: 100%;
+  padding: 5px 6px 5px 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+.lineage-step button {
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+}
+.lineage-step button:hover {
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+}
+.lineage-rank {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent-700);
+}
+.lineage-name {
+  display: block;
+  font-size: 14px;
+  line-height: 1.3;
+}
+.lineage-sci {
+  display: block;
+  font-size: 12px;
+  font-style: italic;
+  color: var(--color-neutral-600);
+}
+.lineage-step.is-here .lineage-name {
+  font-family: var(--font-heading);
+}
+
+/* ── how it is faring ────────────────────────────────────────────────── */
+
+.statuses {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--color-divider);
+}
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--color-divider);
+  font-size: 13px;
+}
+.status-place {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.status-value {
+  font-family: var(--font-heading);
+  font-size: 12px;
+  color: var(--color-accent-700);
+  white-space: nowrap;
+}
+
+/* ── the map ─────────────────────────────────────────────────────────── */
+
+.range-map {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.range-map-sea {
+  fill: var(--color-neutral-100);
+}
+.range-map-land {
+  fill: var(--color-neutral-200);
+  stroke: var(--color-neutral-400);
+}
+.range-map-equator {
+  stroke: var(--color-neutral-400);
+}
+.range-map-dots circle {
+  fill: var(--color-accent);
+  fill-opacity: 0.55;
+}
+.range-map-interactive {
+  cursor: grab;
+  touch-action: none;
+}
+.range-map-interactive:active {
+  cursor: grabbing;
+}
+
+/* The inline map is a button: the whole thing opens the full-screen one. */
+.map-open {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 2.2;
+  padding: 0;
+  border: 6px solid var(--color-surface);
+  outline: 1px solid var(--color-divider);
+  background: transparent;
+  cursor: pointer;
+  overflow: hidden;
+}
+.map-open:hover {
+  outline-color: var(--color-accent);
+}
+.map-open-hint {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  padding: 5px 9px;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background: rgba(243, 242, 242, 0.93);
+  font-family: var(--font-heading);
+  font-size: 12px;
+  color: var(--color-text);
+}
+.map-open:hover .map-open-hint {
+  border-color: var(--color-accent);
+  color: var(--color-accent-700);
+}
+.map-caption {
+  margin: var(--space-2) 0 0;
+  max-width: 68ch;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--color-neutral-600);
+  font-style: italic;
+  text-wrap: pretty;
+}
+
+/* Full screen: the map takes the room it needs, notes follow underneath. */
+.map-full {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.map-full .range-map {
+  flex: none;
+  height: min(62vh, 640px);
+  outline: 1px solid var(--color-divider);
+}
+.map-note {
+  margin: 0;
+  max-width: 70ch;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--color-neutral-700);
+  text-wrap: pretty;
+}
+.range-figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-width: 900px;
+}
+.range-figure figcaption {
+  font-family: var(--font-heading);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+}
+.range-credit {
+  font-size: 12px;
+  color: var(--color-neutral-600);
+}
+.range-credit a {
+  color: var(--color-accent-700);
+}
+.range-figure img {
+  width: 100%;
+  border: 6px solid var(--color-surface);
+  outline: 1px solid var(--color-divider);
+  background: #fff;
+}
+
+/* ── through the year ────────────────────────────────────────────────── */
+
+.season-bars {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 5px;
+  align-items: end;
+}
+.season-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+.season-bar-track {
+  width: 100%;
+  height: 104px;
+  display: flex;
+  align-items: flex-end;
+  border-bottom: 1px solid var(--color-text);
+}
+.season-bar-fill {
+  width: 100%;
+  min-height: 1px;
+  background: color-mix(in srgb, var(--color-accent) 38%, transparent);
+}
+.season-bar:hover .season-bar-fill {
+  background: color-mix(in srgb, var(--color-accent) 60%, transparent);
+}
+.season-bar-fill[data-peak='true'] {
+  background: var(--color-accent);
+}
+.season-bar-label {
+  font-family: var(--font-heading);
+  font-size: 11px;
+  color: var(--color-neutral-600);
+}
+.season-note {
+  margin: var(--space-3) 0 0;
+  max-width: 68ch;
+  font-size: 13px;
+  color: var(--color-neutral-600);
+  font-style: italic;
+  text-wrap: pretty;
+}
+
+/* ── amazing facts ───────────────────────────────────────────────────── */
+
+.facts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: var(--space-4);
+}
+.fact {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--color-surface);
+  border-left: 2px solid var(--color-accent);
+}
+.fact-n {
+  font-family: var(--font-heading);
+  font-size: 22px;
+  line-height: 1;
+  color: var(--color-accent);
+  flex: none;
+}
+.fact span:last-child {
+  font-size: 14px;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+/* ── read further ────────────────────────────────────────────────────── */
+
+.chapters {
+  border-top: 1px solid var(--color-divider);
+}
+.chapter {
+  border-bottom: 1px solid var(--color-divider);
+}
+.chapter summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 12px 0;
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 16px;
+  cursor: pointer;
+  list-style: none;
+}
+.chapter summary::-webkit-details-marker {
+  display: none;
+}
+/* A turning mark, so a shut chapter still looks like a door. */
+.chapter summary::before {
+  content: '+';
+  display: inline-flex;
+  justify-content: center;
+  width: 16px;
+  color: var(--color-accent);
+}
+.chapter[open] summary::before {
+  content: '–';
+}
+.chapter summary:hover {
+  color: var(--color-accent-700);
+}
+.chapter .about-text {
+  padding: 0 0 var(--space-4) 26px;
+  font-size: 15px;
+}
+
+/* ── close relatives ─────────────────────────────────────────────────── */
+
+.relatives {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(158px, 1fr));
+  gap: var(--space-4);
+}
+.relative {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.relative .plate-card {
+  height: 132px;
+  transition: outline-color 120ms ease;
+}
+.relative:hover .plate {
+  outline-color: var(--color-accent);
+}
+.relative-name {
+  font-size: 14px;
+  line-height: 1.3;
+}
+.relative:hover .relative-name {
+  color: var(--color-accent-700);
+}
+.relative-sci {
+  font-size: 12px;
+  font-style: italic;
+  color: var(--color-neutral-600);
+}
+
+.credit {
+  margin-top: var(--space-8);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-divider);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--color-neutral-600);
+  text-wrap: pretty;
+}
+.credit a {
+  color: var(--color-accent-700);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Narrower windows: the rail drops beneath the reading column, and the
+   identity band stacks. */
+@media (max-width: 1100px) {
+  .detail-columns {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+  .detail-rail {
+    position: static;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--space-6);
+  }
+}
+
+@media (max-width: 900px) {
+  .identity {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .figure {
+    flex: 1 0 40%;
+  }
+}
+
+/* ── library rows ────────────────────────────────────────────────────── */
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--color-divider);
+}
+/* The whole row is the target; only Remove is carved out of it. */
+.row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-2);
+  border-bottom: 1px solid var(--color-divider);
+  flex-wrap: wrap;
+}
+.row:hover,
+.row:focus-within {
+  background: color-mix(in srgb, var(--color-accent) 7%, transparent);
+}
+.row:hover .plate,
+.row:focus-within .plate {
+  outline-color: var(--color-accent);
+}
+.row:hover .row-name > span:first-child,
+.row:focus-within .row-name > span:first-child {
+  color: var(--color-accent-700);
+}
+
+/* Laid over the row, beneath the Remove button, above everything else. */
+.row-open {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.row-open:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -3px;
+}
+
+.row-arrow {
+  display: inline-flex;
+  color: var(--color-neutral-400);
+  pointer-events: none;
+  transition: transform 120ms ease, color 120ms ease;
+}
+.row:hover .row-arrow,
+.row:focus-within .row-arrow {
+  color: var(--color-accent);
+  transform: translateX(3px);
+}
+.row-main {
+  min-width: 0;
+  flex: 1;
+}
+.row-name {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+.row-name > span:first-child {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 21px;
+}
+.row-tagline {
+  font-size: 13px;
+  color: var(--color-neutral-600);
+  font-style: italic;
+  margin-top: 2px;
+}
+.row .btn-icon {
+  position: relative;
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+}
+
+/* ── save menu ───────────────────────────────────────────────────────── */
+
+/* `top` and `right` are set inline, measured from the Save button. */
+.save-menu {
+  position: absolute;
+  top: 138px;
+  right: var(--space-6);
+  z-index: 8;
+  width: 300px;
+  max-width: calc(100% - var(--space-6) * 2);
+  padding: 14px;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-divider);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+.save-menu-head {
+  display: flex;
+  align-items: center;
+}
+.save-menu-options {
+  display: flex;
+  flex-direction: column;
+  max-height: 238px;
+  overflow: auto;
+}
+.save-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 0 var(--space-2);
+  border: 0;
+  border-bottom: 1px solid var(--color-divider);
+  background: transparent;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  cursor: pointer;
+  text-align: left;
+}
+.save-option:hover {
+  background: var(--color-accent-100);
+}
+.save-option[data-checked='true'] {
+  background: var(--color-accent-100);
+}
+.save-option .mark {
+  width: 16px;
+  flex: none;
+  color: var(--color-accent);
+}
+.close-x {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-neutral-700);
+  cursor: pointer;
+}
+.close-x:hover {
+  background: color-mix(in srgb, var(--color-text) 8%, transparent);
+  color: var(--color-text);
+}
+
+/* ── gallery overlay ─────────────────────────────────────────────────── */
+
+.gallery {
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  /* The design used 98% opacity; at real text sizes the page beneath showed
+     through, so this is fully opaque. */
+  background: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+}
+.gallery-head {
+  display: flex;
+  align-items: baseline;
+  gap: 11px;
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--color-divider);
+  flex-wrap: wrap;
+}
+.gallery-head .name {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 22px;
+}
+.gallery-head .count {
+  font-size: 13px;
+  color: var(--color-neutral-600);
+  font-style: italic;
+}
+/* The controls sit together at the far end of the bar. */
+.gallery-head .btn-icon:first-of-type {
+  margin-left: auto;
+}
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--space-6);
+}
+
+/* ── toast ───────────────────────────────────────────────────────────── */
+
+.toast {
+  position: absolute;
+  bottom: var(--space-6);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  max-width: min(520px, calc(100% - var(--space-6) * 2));
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  border: 1px solid var(--color-divider);
+  color: var(--color-text);
+  font-size: 14px;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+}
+
+/* ── loading & errors ────────────────────────────────────────────────── */
+
+.status-note {
+  padding: 46px;
+  text-align: center;
+  color: var(--color-neutral-700);
+  font-size: 15px;
+  font-style: italic;
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-text) 6%, transparent) 25%,
+    color-mix(in srgb, var(--color-text) 11%, transparent) 37%,
+    color-mix(in srgb, var(--color-text) 6%, transparent) 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+  border-radius: var(--radius-sm);
+}
+@keyframes shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}
+
+/* ── narrow windows ──────────────────────────────────────────────────── */
+
+/* The design only ever described one width. Below 860px the two-column detail
+   layout and the fixed sidebar both stop working, so the shell stacks. */
+@media (max-width: 860px) {
+  .app {
+    flex-direction: column;
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+  }
+  .sidebar {
+    width: 100%;
+    border-right: 0;
+    border-bottom: 1px solid var(--color-divider);
+    padding: var(--space-4);
+  }
+  .main {
+    min-height: 60dvh;
+  }
+  /* Not enough width to sit beside the credit — put it in the far corner. */
+  .plate-action {
+    top: 10px;
+    bottom: auto;
+  }
+  .plate-hero .plate-caption {
+    padding-right: 14px;
+  }
+  .view,
+  .detail {
+    padding: var(--space-4);
+  }
+  .topbar {
+    padding: var(--space-3) var(--space-4);
+  }
+  /* Too little room to hang off a button — dock it to the bottom instead.
+     !important overrides the measured inline offsets. */
+  .save-menu {
+    top: auto !important;
+    bottom: var(--space-4);
+    right: var(--space-4) !important;
+    left: var(--space-4);
+    width: auto;
+    max-width: none;
+  }
+}
