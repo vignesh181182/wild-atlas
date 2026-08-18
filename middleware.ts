@@ -22,5 +22,9 @@ export const config = {
     '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
     // And always the API routes.
     '/(api|trpc)(.*)',
+    // Clerk's own auto-proxy path. The broad matcher above already covers it,
+    // but Clerk asks for it by name, and stating it keeps it covered if that
+    // pattern is ever tightened.
+    '/__clerk/:path*',
   ],
 };
