@@ -1,7 +1,9 @@
 'use client';
 
 import { UserButton } from '@clerk/nextjs';
+import Image from 'next/image';
 import { useState } from 'react';
+import emblem from '@/public/wild-atlas-logo-emb.png';
 import { ALL_GROUP, type Library } from '@/hooks/useLibrary';
 import { PencilIcon, StarIcon, TrashIcon } from './icons';
 
@@ -62,7 +64,12 @@ export function Sidebar({
 
   return (
     <aside className="sidebar">
-      <h1 className="brand">Wild Atlas</h1>
+      {/* The emblem alone here — the sidebar already sets the name in type,
+          and the full lockup would repeat it at a size too small to read. */}
+      <h1 className="brand">
+        <Image src={emblem} alt="" aria-hidden sizes="34px" />
+        Wild Atlas
+      </h1>
 
       <button
         type="button"

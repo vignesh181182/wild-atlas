@@ -93,6 +93,18 @@ button {
   font-size: 24px;
   letter-spacing: -0.01em;
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Bigger than the cap height beside it, because the emblem is intricate —
+   antlers, a bird, a wolf — and below roughly this size the detail collapses
+   into a smudge rather than reading as animals. */
+.brand img {
+  width: 34px;
+  height: 34px;
+  flex: none;
 }
 
 .surprise-btn {
@@ -1905,13 +1917,19 @@ button {
   gap: var(--space-2);
 }
 
-/* The masthead, larger than the sidebar's since it is the only thing here. */
+/* The masthead: the full lockup, which carries the name itself. The asset is
+   square with the artwork inset, so it is sized generously and the margin it
+   brings with it does the spacing. */
 .gate-brand {
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: 38px;
-  letter-spacing: -0.01em;
   margin: 0;
+  line-height: 0;
+}
+
+.gate-brand img {
+  width: 220px;
+  height: auto;
+  /* The lockup's own baked-in margin already separates it from the tagline. */
+  margin-bottom: calc(var(--space-4) * -1);
 }
 
 .gate-tagline {
