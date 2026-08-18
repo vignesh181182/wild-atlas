@@ -17,9 +17,50 @@ body {
 body {
   background: var(--color-bg);
   color: var(--color-text);
-  font-family: var(--font-body);
-  font-size: 15px;
 }
+
+/* ── type ────────────────────────────────────────────────────────────── */
+
+/* The design system shipped two serifs, which is why the app read like a
+   broadsheet. These override its two tokens with three roles: a display serif
+   that only ever appears large, a reading serif for prose and scientific
+   names, and a sans that carries every piece of interface. */
+:root {
+  --font-display: var(--font-display-loaded), 'Times New Roman', serif;
+  --font-serif: var(--font-reading-loaded), Georgia, serif;
+  --font-sans: var(--font-sans-loaded), system-ui, -apple-system, sans-serif;
+
+  /* The system's own names, repointed. Everything that asked for a "heading"
+     was really asking for interface type, so it now gets the sans. */
+  --font-heading: var(--font-sans);
+  --font-heading-weight: 600;
+  --font-body: var(--font-sans);
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Prose, and the italic binomials that belong to the same voice. */
+.about-text,
+.fact span:last-child,
+.hero-definition,
+.identity-definition {
+  font-family: var(--font-serif);
+}
+.hero-sci,
+.detail-sci,
+.relative-sci,
+.lineage-sci,
+.row-tagline,
+.suggestion-kind,
+.result-sub {
+  font-family: var(--font-serif);
+  font-style: italic;
+}
+
 
 button {
   font-family: inherit;
@@ -47,8 +88,8 @@ button {
 }
 
 .brand {
-  font-family: var(--font-heading);
-  font-weight: var(--font-heading-weight);
+  font-family: var(--font-display);
+  font-weight: 400;
   font-size: 24px;
   letter-spacing: -0.01em;
   margin: 0;
@@ -246,8 +287,10 @@ button {
 /* ── main column ─────────────────────────────────────────────────────── */
 
 .main {
-  flex: 1;
+  /* Flex items refuse to shrink below their content by default, which lets one
+     long unbreakable line drag the whole column wider than the window. */
   min-width: 0;
+  flex: 1;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -394,7 +437,7 @@ button {
 }
 .page-title {
   margin: 0;
-  font-family: var(--font-heading);
+  font-family: var(--font-display);
   font-weight: 400;
   font-size: 34px;
   letter-spacing: -0.01em;
@@ -448,12 +491,18 @@ button {
 
 /* ── photo plates ────────────────────────────────────────────────────── */
 
-/* `.plate` comes from the design system: sepia wash, thick paper mount,
-   hairline outline. These modifiers only set the size and hold the caption. */
+/* `.plate` arrives from the design system as a sepia-washed print in a thick
+   paper mount. That is the look this redesign moved away from: the photographs
+   are the point, so they keep their own colour and sit in a soft-cornered
+   frame like every other surface here. */
 .plate {
   position: relative;
   display: block;
   overflow: hidden;
+  filter: none;
+  border: 0;
+  outline: 0;
+  border-radius: 16px;
   background: repeating-linear-gradient(45deg, #e3e0e0 0 12px, #eeecec 12px 24px);
 }
 .plate img {
@@ -476,16 +525,6 @@ button {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.plate-hero {
-  height: 430px;
-  border-width: 8px;
-}
-.plate-hero .plate-caption {
-  font-size: 12px;
-  padding: 14px;
-  /* Clear the gallery button sitting in the same corner. */
-  padding-right: 96px;
-}
 .plate-card {
   height: 168px;
 }
@@ -496,7 +535,7 @@ button {
   width: 92px;
   height: 62px;
   flex: none;
-  border-width: 4px;
+  border-radius: 12px;
 }
 
 /* ── results grid ────────────────────────────────────────────────────── */
@@ -522,7 +561,7 @@ button {
   text-align: left;
 }
 .result:hover .plate {
-  outline-color: var(--color-accent);
+  box-shadow: 0 0 0 2px var(--color-accent);
 }
 .result-name {
   display: flex;
@@ -658,107 +697,185 @@ button {
 
 /* ── a creature's page ───────────────────────────────────────────────── */
 
-/* The page reads top to bottom in one measure: see it, know what it is, take
-   the numbers, then where and when, then the prose. Reference material moves
-   into the rail so it never interrupts the reading. */
+/* The photograph runs to the edges with the name laid over it, and a sheet of
+   facts rides up over its bottom corner. Everything below that is one column
+   of reading with a rail of reference material beside it. */
 
-/* No top padding: the section bar sticks to the top of this box, and a
-   padding strip above it is a gap that scrolling text shows through. The
-   first element carries the space instead. */
 .detail {
-  padding: 0 var(--space-6) 48px;
+  padding: 0;
   scroll-behavior: smooth;
 }
-.detail > .back-btn,
-.detail > .detail-eyebrow,
-.detail > .identity:first-child {
-  margin-top: var(--space-4);
+
+/* ── the hero ────────────────────────────────────────────────────────── */
+
+.hero {
+  position: relative;
+  height: clamp(320px, 52vh, 560px);
+  overflow: hidden;
+  background: var(--color-neutral-200);
+}
+.hero-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* No sepia here. The plates elsewhere are prints in an album; this one is the
+   animal, and it should look like it did on the day. */
+.hero-photo.is-empty {
+  background: repeating-linear-gradient(45deg, #e3e0e0 0 12px, #eeecec 12px 24px);
 }
 
-.back-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 40px;
-  padding: 0 var(--space-1);
-  border: 0;
-  background: transparent;
-  color: var(--color-accent);
-  font-family: var(--font-heading);
-  font-weight: var(--font-heading-weight);
-  font-size: 15px;
-  cursor: pointer;
-}
-.back-btn:hover {
-  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+/* Dark enough at the foot to carry white type, invisible at the top. */
+.hero-veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(20, 18, 17, 0.28) 0%,
+    rgba(20, 18, 17, 0) 26%,
+    rgba(20, 18, 17, 0) 38%,
+    rgba(20, 18, 17, 0.72) 88%,
+    rgba(20, 18, 17, 0.82) 100%
+  );
 }
 
-/* Names the page when there is no back button above the title — the surprise
-   arrives here rather than being navigated to. */
-.detail-eyebrow {
+.hero-text {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: var(--space-6) var(--space-6) calc(var(--space-6) + 28px);
+  color: #fff;
+}
+.hero-eyebrow {
+  display: block;
+  margin-bottom: 6px;
   font-family: var(--font-heading);
   font-size: 12px;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--color-accent-700);
+  color: rgba(255, 255, 255, 0.82);
 }
-
-/* ── identity ────────────────────────────────────────────────────────── */
-
-.identity {
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-  gap: var(--space-6);
-  align-items: stretch;
-  margin-top: var(--space-3);
-}
-.identity .plate-hero {
-  height: auto;
-  aspect-ratio: 3 / 2;
-}
-
-.identity-text {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-2);
-  padding-top: var(--space-1);
-}
-.detail-title {
+.hero-title {
   margin: 0;
-  font-family: var(--font-heading);
+  font-family: var(--font-display);
   font-weight: 400;
-  font-size: clamp(34px, 3.6vw, 52px);
+  font-size: clamp(38px, 5vw, 68px);
   line-height: 1.02;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.02em;
   text-wrap: balance;
 }
-.detail-sci {
-  margin: 0;
-  font-size: 17px;
-  color: var(--color-neutral-700);
+.hero-sci {
+  display: inline-block;
+  margin-left: var(--space-3);
+  font-size: clamp(15px, 1.4vw, 20px);
   font-style: italic;
+  letter-spacing: 0;
+  color: rgba(255, 255, 255, 0.86);
+  vertical-align: baseline;
+}
+.hero-definition {
+  margin: var(--space-2) 0 0;
+  max-width: 68ch;
+  font-size: clamp(15px, 1.3vw, 18px);
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.92);
+  text-wrap: pretty;
+}
+.hero-credit {
+  margin: var(--space-2) 0 0;
+  max-width: 68ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.6);
 }
 
-/* Small facts that belong to the name itself: what kind of thing, what rank,
-   how it is faring. */
+/* The two things that float on the photograph itself. */
+.hero-btn {
+  position: absolute;
+  top: var(--space-4);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 44px;
+  height: 44px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(8px);
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+.hero-btn:hover {
+  background: #fff;
+  color: var(--color-accent-700);
+}
+.hero-back {
+  left: var(--space-4);
+  padding: 0;
+}
+.hero-gallery {
+  right: var(--space-4);
+}
+
+/* ── the sheet ───────────────────────────────────────────────────────── */
+
+/* Rides up over the photograph, which is what makes the page feel like one
+   object rather than a picture with a document under it. */
+.sheet {
+  position: relative;
+  z-index: 1;
+  margin-top: -28px;
+  padding: var(--space-4) var(--space-6) 48px;
+  border-radius: 28px 28px 0 0;
+  background: var(--color-bg);
+  min-height: 60vh;
+}
+
+.sheet-top {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-4);
+}
+
 .tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 2px;
+  gap: 7px;
+  flex: 1;
+  min-width: 0;
 }
 .tag {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
+  gap: 7px;
+  max-width: 100%;
+  padding: 7px 14px;
   border: 1px solid var(--color-divider);
   border-radius: 100px;
-  font-family: var(--font-heading);
-  font-size: 12.5px;
-  color: var(--color-neutral-700);
+  font-size: 13.5px;
+  color: var(--color-neutral-800);
   white-space: nowrap;
+}
+/* A list of other names can be long. Left unbreakable it sets a minimum width
+   for the whole page and pushes a phone's layout off its own screen. */
+.tag-quiet {
+  display: inline-block;
+  border-style: dashed;
+  color: var(--color-neutral-600);
+  white-space: normal;
 }
 .tag-status[data-tone='risk'] {
   border-color: var(--color-accent);
@@ -788,125 +905,70 @@ button {
   background: linear-gradient(90deg, currentColor 50%, transparent 50%);
 }
 
-.identity-definition {
-  margin: var(--space-1) 0 0;
-  font-size: 16px;
-  line-height: 1.55;
-  color: var(--color-neutral-800);
-  text-wrap: pretty;
-  max-width: 46ch;
-}
-.identity-aliases {
-  margin: 0;
-  font-size: 13px;
-  color: var(--color-neutral-600);
-}
-.identity-aliases span {
-  font-family: var(--font-heading);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--color-accent-700);
-  margin-right: 6px;
-}
-
 .detail-actions {
   display: flex;
   gap: var(--space-2);
   flex-wrap: wrap;
-  margin-top: auto;
-  padding-top: var(--space-2);
-}
-/* The gallery button, sitting in the corner of the photograph. */
-.plate-action {
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 38px;
-  padding: 0 11px;
-  border: 1px solid var(--color-divider);
-  border-radius: var(--radius-md);
-  background: rgba(243, 242, 242, 0.93);
-  color: var(--color-text);
-  font-family: var(--font-heading);
-  font-size: 13px;
-  font-variant-numeric: tabular-nums;
-  cursor: pointer;
-}
-.plate-action:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent-700);
+  margin-left: auto;
 }
 
 /* ── the figures ─────────────────────────────────────────────────────── */
 
-/* Whatever is known about the body of the thing, in one line of numerals.
-   Ruled cells rather than boxes: this is a page in a book, not a dashboard. */
+/* Whatever is known about the body of the thing, in one line of numerals. No
+   rules between them: the numbers are big enough to space themselves. */
 .figures {
-  /* Flex rather than equal columns: three facts should sit together at the
-     left, not stretch themselves across the whole page. */
   display: flex;
   flex-wrap: wrap;
-  margin: var(--space-6) 0 0;
-  border-top: 1px solid var(--color-text);
-  border-bottom: 1px solid var(--color-divider);
+  gap: var(--space-6) var(--space-8);
+  margin: var(--space-4) 0 var(--space-6);
 }
 .figure {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  min-width: 132px;
-  padding: var(--space-3) var(--space-6) var(--space-3) var(--space-4);
-  border-left: 1px solid var(--color-divider);
-}
-.figure:first-child {
-  border-left: 0;
-  padding-left: 0;
+  gap: 1px;
+  min-width: 96px;
 }
 .figure dd {
   margin: 0;
-  font-family: var(--font-heading);
-  font-size: clamp(20px, 2vw, 27px);
+  font-family: var(--font-display);
+  font-size: clamp(24px, 2.4vw, 32px);
   line-height: 1.1;
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
 }
 .figure dt {
-  font-family: var(--font-heading);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-size: 14px;
   color: var(--color-neutral-600);
 }
 
 /* ── the spine ───────────────────────────────────────────────────────── */
 
-/* A page this long needs to say where you are and what is left. */
 .section-nav {
   position: sticky;
   top: 0;
   z-index: 5;
   display: flex;
-  gap: 2px;
-  flex-wrap: wrap;
-  /* Full bleed: pulled out to the page's edges and padded back in, so nothing
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  /* Full bleed: pulled out to the sheet's edges and padded back in, so nothing
      scrolls past it down the sides. */
-  margin: 0 calc(-1 * var(--space-6)) var(--space-2);
+  margin: 0 calc(-1 * var(--space-6)) var(--space-4);
   padding: var(--space-2) var(--space-6);
   background: var(--color-bg);
   border-bottom: 1px solid var(--color-divider);
 }
+.section-nav::-webkit-scrollbar {
+  display: none;
+}
 .section-nav button {
-  padding: 6px 12px;
+  flex: none;
+  padding: 7px 14px;
   border: 0;
   border-radius: 100px;
   background: transparent;
   color: var(--color-neutral-700);
-  font-family: var(--font-heading);
-  font-size: 13px;
+  font-size: 13.5px;
   cursor: pointer;
 }
 .section-nav button:hover {
@@ -924,38 +986,41 @@ button {
   grid-template-columns: minmax(0, 1fr) 300px;
   gap: var(--space-8);
   align-items: start;
-  margin-top: var(--space-4);
 }
 
 .section {
-  margin-top: var(--space-6);
-  scroll-margin-top: 56px;
+  margin-top: var(--space-8);
+  scroll-margin-top: 60px;
 }
 .section:first-child {
   margin-top: 0;
 }
 .section h3 {
   margin: 0 0 var(--space-3);
-  padding-bottom: 6px;
-  border-bottom: 1px solid var(--color-text);
-  font-family: var(--font-heading);
-  font-weight: var(--font-heading-weight);
-  font-size: 19px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: -0.006em;
 }
 .section-note {
-  margin: -6px 0 var(--space-3);
-  font-size: 13px;
+  margin: -8px 0 var(--space-3);
+  font-size: 13.5px;
   color: var(--color-neutral-600);
-  font-style: italic;
   text-wrap: pretty;
 }
 
 .about-text {
   margin: 0;
-  font-size: 16px;
+  font-size: 16.5px;
   line-height: 1.72;
-  max-width: 68ch;
   text-wrap: pretty;
+}
+/* Two measures side by side once there is room for two good ones. */
+@media (min-width: 700px) {
+  .about-text {
+    columns: 2;
+    column-gap: var(--space-8);
+  }
 }
 .about-text p {
   margin: 0 0 var(--space-3);
@@ -967,25 +1032,27 @@ button {
 /* The rail holds what you look up rather than what you read. */
 .detail-rail {
   position: sticky;
-  top: 56px;
+  top: 60px;
   display: flex;
   flex-direction: column;
   gap: var(--space-6);
 }
+.rail-block {
+  padding: var(--space-4);
+  border-radius: 18px;
+  background: var(--color-surface);
+}
 .rail-block h3 {
   margin: 0 0 var(--space-2);
   font-family: var(--font-heading);
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--color-neutral-600);
+  font-weight: var(--font-heading-weight);
+  font-size: 15px;
 }
 .rail-note {
   margin: var(--space-2) 0 0;
-  font-size: 12px;
+  font-size: 12.5px;
   line-height: 1.5;
   color: var(--color-neutral-600);
-  font-style: italic;
   text-wrap: pretty;
 }
 
@@ -1009,7 +1076,7 @@ button {
   top: 14px;
   bottom: -4px;
   width: 1px;
-  background: var(--color-divider);
+  background: var(--color-neutral-300);
 }
 .lineage-step:last-child::before {
   display: none;
@@ -1023,7 +1090,7 @@ button {
   height: 7px;
   border-radius: 50%;
   border: 1px solid var(--color-neutral-400);
-  background: var(--color-bg);
+  background: var(--color-surface);
 }
 .lineage-step.is-here::after {
   border-color: var(--color-accent);
@@ -1043,16 +1110,15 @@ button {
 }
 .lineage-step button {
   cursor: pointer;
-  border-radius: var(--radius-sm);
+  border-radius: 8px;
 }
 .lineage-step button:hover {
-  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  background: color-mix(in srgb, var(--color-accent) 14%, transparent);
 }
 .lineage-rank {
   display: block;
-  font-family: var(--font-heading);
-  font-size: 10px;
-  letter-spacing: 0.1em;
+  font-size: 11px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--color-accent-700);
 }
@@ -1068,7 +1134,8 @@ button {
   color: var(--color-neutral-600);
 }
 .lineage-step.is-here .lineage-name {
-  font-family: var(--font-heading);
+  font-family: var(--font-display);
+  font-size: 15.5px;
 }
 
 /* ── how it is faring ────────────────────────────────────────────────── */
@@ -1077,7 +1144,6 @@ button {
   list-style: none;
   margin: 0;
   padding: 0;
-  border-top: 1px solid var(--color-divider);
 }
 .status-row {
   display: flex;
@@ -1086,6 +1152,9 @@ button {
   padding: 7px 0;
   border-bottom: 1px solid var(--color-divider);
   font-size: 13px;
+}
+.status-row:last-child {
+  border-bottom: 0;
 }
 .status-place {
   flex: 1;
@@ -1137,38 +1206,36 @@ button {
   width: 100%;
   aspect-ratio: 2.2;
   padding: 0;
-  border: 6px solid var(--color-surface);
-  outline: 1px solid var(--color-divider);
-  background: transparent;
+  border: 0;
+  border-radius: 18px;
+  background: var(--color-neutral-100);
   cursor: pointer;
   overflow: hidden;
 }
 .map-open:hover {
-  outline-color: var(--color-accent);
+  box-shadow: 0 0 0 2px var(--color-accent);
 }
 .map-open-hint {
   position: absolute;
-  right: 10px;
-  bottom: 10px;
-  padding: 5px 9px;
-  border: 1px solid var(--color-divider);
-  border-radius: var(--radius-md);
-  background: rgba(243, 242, 242, 0.93);
+  right: 12px;
+  bottom: 12px;
+  padding: 7px 12px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(6px);
   font-family: var(--font-heading);
-  font-size: 12px;
+  font-size: 12.5px;
   color: var(--color-text);
 }
 .map-open:hover .map-open-hint {
-  border-color: var(--color-accent);
   color: var(--color-accent-700);
 }
 .map-caption {
   margin: var(--space-2) 0 0;
-  max-width: 68ch;
+  max-width: 72ch;
   font-size: 13px;
   line-height: 1.55;
   color: var(--color-neutral-600);
-  font-style: italic;
   text-wrap: pretty;
 }
 
@@ -1181,7 +1248,9 @@ button {
 .map-full .range-map {
   flex: none;
   height: min(62vh, 640px);
-  outline: 1px solid var(--color-divider);
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--color-neutral-100);
 }
 .map-note {
   margin: 0;
@@ -1200,10 +1269,13 @@ button {
 }
 .range-figure figcaption {
   font-family: var(--font-heading);
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--color-neutral-600);
+  font-size: 14px;
+  color: var(--color-neutral-700);
+}
+.range-figure img {
+  width: 100%;
+  border-radius: 18px;
+  background: #fff;
 }
 .range-credit {
   font-size: 12px;
@@ -1212,56 +1284,48 @@ button {
 .range-credit a {
   color: var(--color-accent-700);
 }
-.range-figure img {
-  width: 100%;
-  border: 6px solid var(--color-surface);
-  outline: 1px solid var(--color-divider);
-  background: #fff;
-}
 
 /* ── through the year ────────────────────────────────────────────────── */
 
 .season-bars {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  gap: 5px;
+  gap: 6px;
   align-items: end;
 }
 .season-bar {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
 }
 .season-bar-track {
   width: 100%;
-  height: 104px;
+  height: 108px;
   display: flex;
   align-items: flex-end;
-  border-bottom: 1px solid var(--color-text);
 }
 .season-bar-fill {
   width: 100%;
-  min-height: 1px;
-  background: color-mix(in srgb, var(--color-accent) 38%, transparent);
+  min-height: 2px;
+  border-radius: 6px 6px 3px 3px;
+  background: color-mix(in srgb, var(--color-accent) 32%, transparent);
 }
 .season-bar:hover .season-bar-fill {
-  background: color-mix(in srgb, var(--color-accent) 60%, transparent);
+  background: color-mix(in srgb, var(--color-accent) 55%, transparent);
 }
 .season-bar-fill[data-peak='true'] {
   background: var(--color-accent);
 }
 .season-bar-label {
-  font-family: var(--font-heading);
-  font-size: 11px;
+  font-size: 12px;
   color: var(--color-neutral-600);
 }
 .season-note {
   margin: var(--space-3) 0 0;
-  max-width: 68ch;
+  max-width: 72ch;
   font-size: 13px;
   color: var(--color-neutral-600);
-  font-style: italic;
   text-wrap: pretty;
 }
 
@@ -1270,24 +1334,24 @@ button {
 .facts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: var(--space-4);
+  gap: var(--space-3);
 }
 .fact {
   display: flex;
   gap: var(--space-2);
-  padding: var(--space-3);
+  padding: var(--space-4);
+  border-radius: 18px;
   background: var(--color-surface);
-  border-left: 2px solid var(--color-accent);
 }
 .fact-n {
   font-family: var(--font-heading);
-  font-size: 22px;
+  font-size: 20px;
   line-height: 1;
   color: var(--color-accent);
   flex: none;
 }
 .fact span:last-child {
-  font-size: 14px;
+  font-size: 14.5px;
   line-height: 1.6;
   text-wrap: pretty;
 }
@@ -1295,16 +1359,22 @@ button {
 /* ── read further ────────────────────────────────────────────────────── */
 
 .chapters {
-  border-top: 1px solid var(--color-divider);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 .chapter {
-  border-bottom: 1px solid var(--color-divider);
+  border-radius: 16px;
+  background: var(--color-surface);
+}
+.chapter[open] {
+  padding-bottom: var(--space-2);
 }
 .chapter summary {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding: 12px 0;
+  padding: 14px var(--space-4);
   font-family: var(--font-heading);
   font-weight: var(--font-heading-weight);
   font-size: 16px;
@@ -1329,21 +1399,22 @@ button {
   color: var(--color-accent-700);
 }
 .chapter .about-text {
-  padding: 0 0 var(--space-4) 26px;
+  padding: 0 var(--space-4) var(--space-3);
   font-size: 15px;
+  columns: 1;
 }
 
 /* ── close relatives ─────────────────────────────────────────────────── */
 
 .relatives {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(158px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: var(--space-4);
 }
 .relative {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 7px;
   padding: 0;
   border: 0;
   background: transparent;
@@ -1353,15 +1424,16 @@ button {
   cursor: pointer;
 }
 .relative .plate-card {
-  height: 132px;
-  transition: outline-color 120ms ease;
+  height: 128px;
 }
-.relative:hover .plate {
-  outline-color: var(--color-accent);
+.relative:hover .plate-card {
+  box-shadow: 0 0 0 2px var(--color-accent);
 }
 .relative-name {
-  font-size: 14px;
-  line-height: 1.3;
+  font-family: var(--font-display);
+  font-size: 16.5px;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
 }
 .relative:hover .relative-name {
   color: var(--color-accent-700);
@@ -1396,9 +1468,9 @@ button {
   white-space: nowrap;
 }
 
-/* Narrower windows: the rail drops beneath the reading column, and the
-   identity band stacks. */
-@media (max-width: 1100px) {
+/* iPad and below: the rail stops being a rail and becomes two blocks under
+   the reading column. */
+@media (max-width: 1080px) {
   .detail-columns {
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-6);
@@ -1407,16 +1479,32 @@ button {
     position: static;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: var(--space-6);
+    gap: var(--space-4);
   }
 }
 
-@media (max-width: 900px) {
-  .identity {
-    grid-template-columns: minmax(0, 1fr);
+@media (max-width: 760px) {
+  .hero-text {
+    padding: var(--space-4) var(--space-4) calc(var(--space-4) + 28px);
   }
-  .figure {
-    flex: 1 0 40%;
+  .hero-sci {
+    display: block;
+    margin: 4px 0 0;
+  }
+  .sheet {
+    padding: var(--space-4) var(--space-4) 40px;
+  }
+  .section-nav {
+    margin-inline: calc(-1 * var(--space-4));
+    padding-inline: var(--space-4);
+  }
+  .detail-actions {
+    width: 100%;
+    margin-left: 0;
+  }
+  .detail-actions .btn-accent {
+    flex: 1;
+    justify-content: center;
   }
 }
 
@@ -1443,7 +1531,7 @@ button {
 }
 .row:hover .plate,
 .row:focus-within .plate {
-  outline-color: var(--color-accent);
+  box-shadow: 0 0 0 2px var(--color-accent);
 }
 .row:hover .row-name > span:first-child,
 .row:focus-within .row-name > span:first-child {
@@ -1486,9 +1574,10 @@ button {
   flex-wrap: wrap;
 }
 .row-name > span:first-child {
-  font-family: var(--font-heading);
-  font-weight: var(--font-heading-weight);
-  font-size: 21px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 22px;
+  letter-spacing: -0.01em;
 }
 .row-tagline {
   font-size: 13px;
@@ -1597,8 +1686,8 @@ button {
   flex-wrap: wrap;
 }
 .gallery-head .name {
-  font-family: var(--font-heading);
-  font-weight: var(--font-heading-weight);
+  font-family: var(--font-display);
+  font-weight: 400;
   font-size: 22px;
 }
 .gallery-head .count {
@@ -1670,40 +1759,106 @@ button {
   }
 }
 
-/* ── narrow windows ──────────────────────────────────────────────────── */
+/* ── tablets and phones ──────────────────────────────────────────────── */
 
-/* The design only ever described one width. Below 860px the two-column detail
-   layout and the fixed sidebar both stop working, so the shell stacks. */
-@media (max-width: 860px) {
+/* An iPad in portrait has room for the page but not for a 246px column beside
+   it. Below 900px the sidebar stops being a sidebar: it becomes a bar across
+   the top, with the groups as a row of chips you swipe through. */
+@media (max-width: 900px) {
   .app {
     flex-direction: column;
-    height: auto;
-    min-height: 100dvh;
-    overflow: visible;
+    height: 100dvh;
+    overflow: hidden;
   }
   .sidebar {
     width: 100%;
+    flex: none;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      'brand surprise'
+      'groups groups';
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    overflow: visible;
     border-right: 0;
     border-bottom: 1px solid var(--color-divider);
-    padding: var(--space-4);
+  }
+  .brand {
+    grid-area: brand;
+    font-size: 19px;
+  }
+  .surprise-btn {
+    grid-area: surprise;
+    justify-self: end;
+    min-height: 40px;
+  }
+  .sidebar-section {
+    grid-area: groups;
+    min-width: 0;
+  }
+  .sidebar-section {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  /* "Groups" is obvious from the chips; Edit is not, so it stays. */
+  .section-label {
+    display: none;
+  }
+  .section-head {
+    order: 2;
+    margin-left: 0;
+  }
+  .link-btn {
+    margin-left: 0;
+  }
+  .group-list {
+    order: 1;
+    flex: 1;
+    flex-direction: row;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+  .group-list::-webkit-scrollbar {
+    display: none;
+  }
+  .group-row {
+    flex: none;
+    border-bottom: 0;
+  }
+  .group-btn {
+    min-height: 36px;
+    gap: 6px;
+    padding: 0 14px;
+    border: 1px solid var(--color-divider);
+    border-radius: 100px;
+  }
+  .group-btn[aria-current='true'] {
+    border-color: var(--color-accent);
+  }
+  .add-group {
+    order: 3;
+    flex: none;
+  }
+  .add-group input {
+    width: 108px;
   }
   .main {
-    min-height: 60dvh;
-  }
-  /* Not enough width to sit beside the credit — put it in the far corner. */
-  .plate-action {
-    top: 10px;
-    bottom: auto;
-  }
-  .plate-hero .plate-caption {
-    padding-right: 14px;
-  }
-  .view,
-  .detail {
-    padding: var(--space-4);
+    flex: 1;
+    min-height: 0;
   }
   .topbar {
     padding: var(--space-3) var(--space-4);
+  }
+  .view {
+    padding: var(--space-4);
+  }
+  .detail {
+    padding: 0;
   }
   /* Too little room to hang off a button — dock it to the bottom instead.
      !important overrides the measured inline offsets. */
@@ -1715,4 +1870,55 @@ button {
     width: auto;
     max-width: none;
   }
+}
+
+/* ── account ─────────────────────────────────────────────────────────── */
+
+/* Pinned to the foot of the sidebar. `margin-top: auto` takes up whatever the
+   groups list leaves behind, and collapses harmlessly once the list is long
+   enough to scroll. */
+.account {
+  margin-top: auto;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-divider);
+}
+
+/* ── the doors: sign in, sign up ─────────────────────────────────────── */
+
+/* Deliberately not the app shell — there is no sidebar to sit beside yet, so
+   these are a single centred column on the same paper. */
+.gate {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6) var(--space-4);
+  background: var(--color-bg);
+}
+
+.gate-panel {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* The masthead, larger than the sidebar's since it is the only thing here. */
+.gate-brand {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 38px;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.gate-tagline {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  line-height: 1.45;
+  text-align: center;
+  margin: 0 0 var(--space-4);
+  color: color-mix(in srgb, var(--color-text) 68%, transparent);
 }

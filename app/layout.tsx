@@ -1,6 +1,41 @@
+import { ClerkProvider } from '@clerk/nextjs';
 import type { Metadata, Viewport } from 'next';
+import { Inter, Instrument_Serif, Newsreader } from 'next/font/google';
+import { clerkAppearance } from '@/lib/clerk-appearance';
 import '@/styles/classical.css';
 import './globals.css';
+
+/**
+ * Three faces, three jobs.
+ *
+ * Instrument Serif is the voice: high contrast, only ever large — the
+ * creature's name, the numbers, the brand. Newsreader is for reading, and for
+ * the italic scientific names. Inter does everything an interface does, which
+ * is what stops the whole thing reading like a broadsheet.
+ *
+ * All three are self-hosted by next/font, so there is no render-blocking call
+ * to Google and no flash of the wrong metrics.
+ */
+const display = Instrument_Serif({
+  subsets: ['latin'],
+  weight: '400',
+  style: ['normal', 'italic'],
+  variable: '--font-display-loaded',
+  display: 'swap',
+});
+
+const reading = Newsreader({
+  subsets: ['latin'],
+  style: ['normal', 'italic'],
+  variable: '--font-reading-loaded',
+  display: 'swap',
+});
+
+const sans = Inter({
+  subsets: ['latin'],
+  variable: '--font-sans-loaded',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'Wild Atlas',
@@ -14,17 +49,10 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <head>
-        {/* The design system pulls the roman cuts; the app also uses Lora italic. */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Lora:ital,wght@0,400;0,600;1,400&display=swap"
-        />
-      </head>
-      <body>{children}</body>
-    </html>
+    <ClerkProvider appearance={clerkAppearance} afterSignOutUrl="/sign-in">
+      <html lang="en" className={`${display.variable} ${reading.variable} ${sans.variable}`}>
+        <body>{children}</body>
+      </html>
+    </ClerkProvider>
   );
 }

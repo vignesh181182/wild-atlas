@@ -11,8 +11,8 @@ type PlateProps = {
   /** Falls back to a plain URL when all we have is a thumbnail. */
   src?: string | null;
   alt: string;
-  /** Size modifier: plate-hero, plate-card, plate-gallery, plate-row. */
-  variant: 'hero' | 'card' | 'gallery' | 'row';
+  /** Size modifier: plate-card, plate-gallery, plate-row. */
+  variant: 'card' | 'gallery' | 'row';
   /** Overrides the default caption (the photographer credit). */
   caption?: string | null;
   children?: React.ReactNode;

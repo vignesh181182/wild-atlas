@@ -42,7 +42,21 @@ npm install
 npm run dev
 ```
 
-Then open <http://localhost:3000>. There is nothing to configure.
+Then open <http://localhost:3000>. There is nothing to configure: with no
+Clerk keys set, the SDK starts in keyless mode, raises a throwaway instance of
+its own and shows a "Claim your application" prompt in the corner. Sign-up and
+sign-in work immediately against it.
+
+Claiming that instance is free — Clerk's free tier covers 10,000 monthly active
+users and asks for no card. Claim it, copy the two keys into `.env.local`
+(see [`.env.example`](.env.example)), and the same accounts carry on working:
+
+```env
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_…
+CLERK_SECRET_KEY=sk_test_…
+```
+
+Keyless mode is development-only. A production build needs the real keys.
 
 ```bash
 npm run build
@@ -52,27 +66,58 @@ npm run build
 npm run typecheck
 ```
 
+## Accounts
+
+Every visitor signs in; there is no anonymous mode. The pieces:
+
+| File | What it does |
+|---|---|
+| [`middleware.ts`](middleware.ts) | Carries the session. It does **not** gate by path — Clerk advises against that since v7, because the matcher can drift from the way Next routes a request |
+| [`app/page.tsx`](app/page.tsx) | The gate. A server component that checks for a session and redirects to `/sign-in` without one |
+| [`app/sign-in`](app/sign-in), [`app/sign-up`](app/sign-up) | The two doors, wrapped in [`components/AuthGate`](components/AuthGate.tsx) so they share a masthead |
+| [`lib/clerk-appearance.ts`](lib/clerk-appearance.ts) | The Classical tokens restated in Clerk's shape, so its forms look like the rest of the app |
+
+The API routes under [`app/api`](app/api) stay open deliberately. They proxy
+iNaturalist, Wikipedia and Wikidata — open data, identical for everybody, and
+publicly CDN-cached on purpose. Nothing private passes through them.
+
+### What an account does and does not do
+
+The library is still `localStorage`, now keyed per user id, so two people on one
+browser no longer share a notebook. It does **not** sync: sign in on a second
+device and the groups start empty. Making them follow the account means a real
+database behind [`hooks/useLibrary`](hooks/useLibrary.ts), which is the one
+place that would have to change.
+
+A notebook built up before accounts existed is adopted by the first account to
+sign in on that browser, rather than being stranded.
+
 ## How it's laid out
 
 ```
+middleware.ts             Carries the Clerk session on every request
+
 app/
-  layout.tsx              Document shell, fonts, metadata
-  page.tsx                The five app states and the navigation between them
+  layout.tsx              Document shell, fonts, metadata, ClerkProvider
+  page.tsx                The gate: checks for a session, then mounts the app
   globals.css             Application layout, built on the design-system tokens
+  sign-in/, sign-up/      The two doors
   api/
     search/route.ts       GET /api/search?q=…      → ranked search results
     creature/[id]/route.ts GET /api/creature/:id   → one assembled creature page
     surprise/route.ts     GET /api/surprise        → the creature of the day
 
 components/               One file per piece of the screen
+  WildAtlas.tsx           The five app states and the navigation between them
+  AuthGate.tsx            The frame the sign-in and sign-up screens share
   Sidebar · SearchBar · SurpriseView · QuietView · ResultsView
   DetailView · LibraryView · SaveMenu · GalleryOverlay · Plate · icons
 
 hooks/
-  useLibrary.ts           Saved creatures and groups, persisted to localStorage
+  useLibrary.ts           Saved creatures and groups, per account, in localStorage
   useSearch.ts            Debounced, abortable search-as-you-type
   useCreature.ts          Creature fetching with a per-tab cache
-  useSurprise.ts          The daily creature and whether it has been read
+  useSurprise.ts          The daily creature, per account, and whether it's read
   useToast.ts             The single line of feedback at the bottom
   useDebouncedValue.ts
 
@@ -83,6 +128,7 @@ lib/                      Server-side data layer — no React in here
   taxonomy.ts             Taxonomy codes → plain English
   surprise.ts             The curated list and the date-derived daily pick
   api-client.ts           Browser-side calls to this app's own routes
+  clerk-appearance.ts     The Classical tokens restated in Clerk's shape
   summary.ts · types.ts
 
 styles/
@@ -90,7 +136,7 @@ styles/
 ```
 
 The rule the layout follows: `lib/` never imports React, `components/` never
-fetches, and `app/page.tsx` owns navigation and nothing else.
+fetches, and `components/WildAtlas.tsx` owns navigation and nothing else.
 
 ### Two things worth knowing
 

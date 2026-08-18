@@ -108,51 +108,68 @@ export function DetailView({
 
   return (
     <div className="view detail" id={`creature-${creature.id}`}>
-      {onBack ? (
-        <button type="button" className="back-btn" onClick={onBack}>
-          <BackIcon />
-          {backLabel}
-        </button>
-      ) : null}
+      {/* The photograph is the page's front door: full bleed, unframed, with
+          the name laid over it and the sheet of facts riding up underneath. */}
+      <header className="hero">
+        {hero ? (
+          <img className="hero-photo" src={hero.url} alt={creature.name} />
+        ) : (
+          <div className="hero-photo is-empty" />
+        )}
+        <div className="hero-veil" />
 
-      {eyebrow ? <div className="detail-eyebrow">{eyebrow}</div> : null}
+        {onBack ? (
+          <button
+            type="button"
+            className="hero-btn hero-back"
+            data-tip={backLabel}
+            aria-label={backLabel}
+            onClick={onBack}
+          >
+            <BackIcon />
+          </button>
+        ) : null}
 
-      <header className="identity">
-        <Plate photo={hero} alt={creature.name} variant="hero">
-          {creature.photos.length > 1 ? (
-            <button
-              type="button"
-              className="plate-action"
-              data-tip={`See all ${creature.photos.length} photographs`}
-              data-tip-place="left"
-              aria-label={`All ${creature.photos.length} photos`}
-              onClick={onOpenGallery}
-            >
-              <GridIcon />
-              <span>{creature.photos.length}</span>
-            </button>
-          ) : null}
-        </Plate>
+        {creature.photos.length > 1 ? (
+          <button
+            type="button"
+            className="hero-btn hero-gallery"
+            data-tip={`See all ${creature.photos.length} photographs`}
+            data-tip-place="left"
+            aria-label={`All ${creature.photos.length} photos`}
+            onClick={onOpenGallery}
+          >
+            <GridIcon />
+            <span>{creature.photos.length}</span>
+          </button>
+        ) : null}
 
-        <div className="identity-text">
-          <h2 className="detail-title">{creature.name}</h2>
-          <p className="detail-sci">{creature.scientificName}</p>
+        <div className="hero-text">
+          {eyebrow ? <span className="hero-eyebrow">{eyebrow}</span> : null}
+          <h2 className="hero-title">
+            {creature.name}
+            <span className="hero-sci">{creature.scientificName}</span>
+          </h2>
+          <p className="hero-definition">{definition(creature)}</p>
+          {/* iNaturalist asks that the photographer travels with the
+              photograph, so it sits in the flow rather than floating where it
+              can collide with the words. */}
+          {hero?.attribution ? <p className="hero-credit">{hero.attribution}</p> : null}
+        </div>
+      </header>
 
+      <div className="sheet">
+        <div className="sheet-top">
           <div className="tags">
             <span className="tag">{creature.kind}</span>
-            {/* "Species" is already said by the definition below; a rank is
+            {/* "Species" is already said by the line under the title; a rank is
                 only worth a tag when it is a group. */}
             {isGroup(creature.rank) ? <span className="tag">{rankLabel(creature.rank)}</span> : null}
             <StatusTag creature={creature} />
+            {creature.alsoCalled.length ? (
+              <span className="tag tag-quiet">Also called {creature.alsoCalled.join(' · ')}</span>
+            ) : null}
           </div>
-
-          <p className="identity-definition">{definition(creature)}</p>
-
-          {creature.alsoCalled.length ? (
-            <p className="identity-aliases">
-              <span>Also called</span> {creature.alsoCalled.join(' · ')}
-            </p>
-          ) : null}
 
           {/* Only the one action that matters keeps its words. The rest are
               their icons, with a tooltip to name them. */}
@@ -189,7 +206,6 @@ export function DetailView({
             </button>
           </div>
         </div>
-      </header>
 
       {figures.length >= 2 ? (
         <dl className="figures">
@@ -331,8 +347,8 @@ export function DetailView({
         </section>
       ) : null}
 
-      <p className="credit">
-        Photographs and taxonomy from{' '}
+          <p className="credit">
+          Photographs and taxonomy from{' '}
         <a href={creature.inaturalistUrl} target="_blank" rel="noreferrer noopener">
           iNaturalist
         </a>
@@ -348,8 +364,9 @@ export function DetailView({
         {creature.measurements.length || creature.describedBy || creature.rangeMapUrl ? (
           <> · measurements and range map from Wikidata and Wikimedia Commons</>
         ) : null}
-        . Each photograph is credited to its own photographer beneath it.
-      </p>
+          . Each photograph is credited to its own photographer beneath it.
+        </p>
+      </div>
     </div>
   );
 }
