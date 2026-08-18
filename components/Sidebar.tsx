@@ -1,5 +1,6 @@
 'use client';
 
+import { UserButton } from '@clerk/nextjs';
 import { useState } from 'react';
 import { ALL_GROUP, type Library } from '@/hooks/useLibrary';
 import { PencilIcon, StarIcon, TrashIcon } from './icons';
@@ -186,6 +187,30 @@ export function Sidebar({
             +
           </button>
         </div>
+      </div>
+
+      {/* Whose notebook this is, and the way out of it. Sits at the foot of
+          the column, below whatever the groups list grows to. */}
+      <div className="account">
+        <UserButton
+          showName
+          appearance={{
+            elements: {
+              rootBox: { width: '100%' },
+              userButtonTrigger: { width: '100%', justifyContent: 'flex-start' },
+              // Clerk puts the name before the avatar; in a sidebar row the
+              // avatar wants to lead, in line with every other row above it.
+              userButtonBox: {
+                width: '100%',
+                flexDirection: 'row-reverse',
+                // Reversed, so flex-end is the left-hand edge of the row.
+                justifyContent: 'flex-end',
+                gap: '9px',
+              },
+              userButtonOuterIdentifier: { fontSize: '14px' },
+            },
+          }}
+        />
       </div>
     </aside>
   );

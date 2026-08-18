@@ -16,3 +16,9 @@ next-env.d.ts
 # Machine-local editor and agent settings
 .claude/settings.local.json
 .vscode/
+
+# Clerk keyless-mode scratch instance (development only)
+.clerk/
+
+# clerk configuration (can include secrets)
+/.clerk/
