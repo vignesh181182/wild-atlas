@@ -1826,6 +1826,46 @@ button {
   .link-btn {
     margin-left: 0;
   }
+  /* Resting state is the dropdown; the chip row is what Edit opens, because
+     rename and delete need a row each to hang their buttons off. */
+  .sidebar-section[data-editing='false'] .group-list {
+    display: none;
+  }
+  .sidebar-section[data-editing='false'] .group-select {
+    display: block;
+  }
+
+  .group-select {
+    order: 1;
+    flex: 1;
+    min-width: 0;
+    min-height: 36px;
+    padding: 0 34px 0 14px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--color-text);
+    background-color: transparent;
+    border: 1px solid var(--color-divider);
+    border-radius: 100px;
+    /* Own chevron, since the platform one cannot be positioned inside a pill. */
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' fill='none' stroke='%23201f1d' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 11px 7px;
+  }
+  /* Brass once you are actually looking at a group, matching the chips. The
+     chevron is a background image, so it needs recolouring by hand. */
+  .group-select[data-chosen='true'] {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' fill='none' stroke='%23b68235' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  }
+  .group-select:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
   .group-list {
     order: 1;
     flex: 1;
@@ -1882,6 +1922,12 @@ button {
     width: auto;
     max-width: none;
   }
+}
+
+/* The narrow-screen group picker. Hidden by default: the full column has room
+   for the list itself, which says more. */
+.group-select {
+  display: none;
 }
 
 /* ── account ─────────────────────────────────────────────────────────── */

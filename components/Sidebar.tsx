@@ -19,6 +19,15 @@ type SidebarProps = {
   onNotify: (message: string) => void;
 };
 
+/**
+ * A group and how much is in it, for the narrow-screen dropdown. An empty one
+ * is left bare rather than labelled "(0)" — the chips beside it say the same
+ * thing with an em dash, and a nought invites you to wonder what is missing.
+ */
+function withCount(name: string, count: number) {
+  return count ? `${name} (${count})` : name;
+}
+
 export function Sidebar({
   library,
   activeGroup,
@@ -83,7 +92,32 @@ export function Sidebar({
         {surpriseUnread ? <span className="surprise-dot" aria-label="unread" /> : null}
       </button>
 
-      <div className="sidebar-section">
+      <div className="sidebar-section" data-editing={editing}>
+        {/* Narrow screens get a dropdown instead of the row of chips: the row
+            could only be scrolled sideways, which put every group past the
+            third one off the edge with nothing to say it was there. The chip
+            row is still what "Edit" opens, since renaming and deleting need a
+            row each to hang the buttons off. */}
+        <select
+          className="group-select"
+          aria-label="Choose a group"
+          data-chosen={activeGroup !== null}
+          value={activeGroup ?? ''}
+          onChange={(e) => {
+            if (e.target.value) onSelectGroup(e.target.value);
+          }}
+        >
+          <option value="" disabled>
+            Groups
+          </option>
+          <option value={ALL_GROUP}>{withCount('All', library.saved.length)}</option>
+          {library.groups.map((group) => (
+            <option key={group} value={group}>
+              {withCount(group, library.countIn(group))}
+            </option>
+          ))}
+        </select>
+
         <div className="section-head">
           <span className="section-label">Groups</span>
           <button
