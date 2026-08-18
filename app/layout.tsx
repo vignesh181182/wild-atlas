@@ -49,10 +49,15 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <ClerkProvider appearance={clerkAppearance} afterSignOutUrl="/sign-in">
-      <html lang="en" className={`${display.variable} ${reading.variable} ${sans.variable}`}>
-        <body>{children}</body>
-      </html>
-    </ClerkProvider>
+    <html lang="en" className={`${display.variable} ${reading.variable} ${sans.variable}`}>
+      <body>
+        {/* Inside <body> rather than wrapping <html>, which is what Clerk asks
+            for since v7 — it keeps the provider from forcing the document
+            shell to render dynamically. */}
+        <ClerkProvider appearance={clerkAppearance} afterSignOutUrl="/sign-in">
+          {children}
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }
