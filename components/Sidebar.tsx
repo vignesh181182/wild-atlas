@@ -1,7 +1,9 @@
 'use client';
 
 import { UserButton } from '@clerk/nextjs';
+import Image from 'next/image';
 import { useState } from 'react';
+import emblem from '@/public/wild-atlas-logo-emb.png';
 import { ALL_GROUP, type Library } from '@/hooks/useLibrary';
 import { PencilIcon, StarIcon, TrashIcon } from './icons';
 
@@ -16,6 +18,15 @@ type SidebarProps = {
   surpriseUnread: boolean;
   onNotify: (message: string) => void;
 };
+
+/**
+ * A group and how much is in it, for the narrow-screen dropdown. An empty one
+ * is left bare rather than labelled "(0)" — the chips beside it say the same
+ * thing with an em dash, and a nought invites you to wonder what is missing.
+ */
+function withCount(name: string, count: number) {
+  return count ? `${name} (${count})` : name;
+}
 
 export function Sidebar({
   library,
@@ -62,7 +73,12 @@ export function Sidebar({
 
   return (
     <aside className="sidebar">
-      <h1 className="brand">Wild Atlas</h1>
+      {/* The emblem alone here — the sidebar already sets the name in type,
+          and the full lockup would repeat it at a size too small to read. */}
+      <h1 className="brand">
+        <Image src={emblem} alt="" aria-hidden sizes="34px" />
+        Wild Atlas
+      </h1>
 
       <button
         type="button"
@@ -76,7 +92,32 @@ export function Sidebar({
         {surpriseUnread ? <span className="surprise-dot" aria-label="unread" /> : null}
       </button>
 
-      <div className="sidebar-section">
+      <div className="sidebar-section" data-editing={editing}>
+        {/* Narrow screens get a dropdown instead of the row of chips: the row
+            could only be scrolled sideways, which put every group past the
+            third one off the edge with nothing to say it was there. The chip
+            row is still what "Edit" opens, since renaming and deleting need a
+            row each to hang the buttons off. */}
+        <select
+          className="group-select"
+          aria-label="Choose a group"
+          data-chosen={activeGroup !== null}
+          value={activeGroup ?? ''}
+          onChange={(e) => {
+            if (e.target.value) onSelectGroup(e.target.value);
+          }}
+        >
+          <option value="" disabled>
+            Groups
+          </option>
+          <option value={ALL_GROUP}>{withCount('All', library.saved.length)}</option>
+          {library.groups.map((group) => (
+            <option key={group} value={group}>
+              {withCount(group, library.countIn(group))}
+            </option>
+          ))}
+        </select>
+
         <div className="section-head">
           <span className="section-label">Groups</span>
           <button
