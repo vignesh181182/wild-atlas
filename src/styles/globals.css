@@ -2133,33 +2133,62 @@ button {
   }
 }
 
-/* ── the split hero (wide screens) ────────────────────────────────────── */
 
-/* From the design (node 433:1575): the photograph takes the left of the hero
-   and the name stands beside it on a panel, rather than lying over the picture.
-   The panel's colour is the photograph's own, sampled on the server — see
-   features/creatures/server/tone.ts — so it belongs to the animal in it.
+/* The frame the save menu hangs inside. It has to carry the window's height
+   down to the page as well, or the two-column layout below has nothing
+   definite to divide and every row grows to its content instead. */
+.creature-screen {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
 
-   Below the breakpoint nothing here applies and the name goes back over the
-   photograph, which is the layout in the narrow design. */
+/* ── a creature on a wide screen ──────────────────────────────────────── */
+
+/* From the design (node 433:1575), which is drawn rotated -90° in the file:
+   undo that and it is a landscape page of two full-height columns.
+
+     left  655   the photograph, and beneath it the name on a panel
+     right 668   the reading — about them, and where it has been seen
+
+   The photograph's cell is 655x436, which is 1.50:1 — a photograph's own
+   shape — so nothing is cropped. That is the point of the split: the picture
+   keeps its proportions because the name has stopped sitting on top of it.
+
+   None of this applies below 900px, where the narrow design puts the name back
+   over the photograph and stacks everything down the page. */
 
 @media (min-width: 901px) {
-  .hero {
+  .detail {
+    /* The column cap is for a page that scrolls; this one fills the window. */
+    max-width: none;
     display: grid;
-    /* 436/398 of the 834 the design is drawn at. minmax(0,…) or the panel's
-       own text sets a floor under its column and takes width off the
-       photograph — fr honours min-content unless told not to. */
-    grid-template-columns: minmax(0, 52.3fr) minmax(0, 47.7fr);
-    aspect-ratio: 834 / 655;
-    max-height: 74vh;
+    grid-template-columns: minmax(0, 655fr) minmax(0, 668fr);
+    align-items: stretch;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* Left: photograph over panel, in the design's own 436/398. */
+  .hero {
+    grid-column: 1;
+    display: grid;
+    grid-template-rows: minmax(0, 436fr) minmax(0, 398fr);
+    aspect-ratio: auto;
+    height: 100%;
+    min-height: 0;
+    max-height: none;
   }
 
   .hero-photo {
     height: 100%;
+    min-height: 0;
   }
 
-  /* The scrim exists to carry white type over a photograph. Beside one, on a
-     panel of its own, it would only muddy the picture's edge. */
+  /* The scrim carries white type over a photograph. The panel does that now. */
   .hero-veil {
     display: none;
   }
@@ -2170,7 +2199,10 @@ button {
     flex-direction: column;
     justify-content: center;
     gap: var(--space-2);
-    padding: var(--space-8);
+    padding: var(--space-6);
+    min-height: 0;
+    overflow: auto;
+    /* The photograph's own colour, sampled on the server. */
     background: linear-gradient(
       to bottom,
       var(--tone-base, #314669),
@@ -2178,8 +2210,20 @@ button {
     );
   }
 
-  /* The buttons sat over the photograph; they stay there, not on the panel. */
+  /* Right: the reading, scrolling on its own so the picture stays put. */
+  .sheet {
+    grid-column: 2;
+    grid-row: 1;
+    height: 100%;
+    min-height: 0;
+    overflow-y: auto;
+    /* It rode up over the hero when it sat beneath one. Beside it, it does not. */
+    margin: 0;
+    border-radius: 0;
+  }
+
+  /* Sat over the photograph's bottom-left; the panel is there now. */
   .hero-gallery {
-    right: calc(47.7% + var(--space-3));
+    right: var(--space-3);
   }
 }

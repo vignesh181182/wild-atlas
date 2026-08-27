@@ -108,7 +108,7 @@ export function CreatureScreen({
   }
 
   return (
-    <div ref={columnRef} style={{ position: 'relative' }}>
+    <div className="creature-screen" ref={columnRef}>
       <DetailView
         creature={creature}
         eyebrow={eyebrow}
