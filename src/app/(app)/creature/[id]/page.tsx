@@ -15,6 +15,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { CreatureScreen } from '@/features/creatures/components/CreatureScreen';
 import { getCreature } from '@/features/creatures/server/creatures';
+import { FALLBACK_TONE, photoTone } from '@/features/creatures/server/tone';
 
 export const revalidate = 86400;
 
@@ -52,5 +53,11 @@ export default async function CreaturePage({ params }: Params) {
   const creature = await getCreature(id);
   if (!creature) notFound();
 
-  return <CreatureScreen creature={creature} />;
+  // Sampled here rather than in the browser: the photograph is served from
+  // another origin, so a canvas could not read it back, and doing it on the
+  // server means it is cached with the rest of the page.
+  const photo = creature.photos[0];
+  const tone = (photo ? await photoTone(photo.thumbUrl ?? photo.url) : null) ?? FALLBACK_TONE;
+
+  return <CreatureScreen creature={creature} tone={tone} />;
 }

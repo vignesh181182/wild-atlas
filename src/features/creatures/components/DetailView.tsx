@@ -11,6 +11,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { rankLabel } from '@/features/creatures/server/taxonomy';
+import type { Tone } from '@/features/creatures/server/tone';
 import type { CreatureDetail } from '@/lib/types';
 import { Lineage } from '@/features/creatures/components/Lineage';
 import { Plate } from '@/features/creatures/components/Plate';
@@ -43,6 +44,12 @@ type DetailViewProps = {
   /** Opens another creature's page — an ancestor, or a relative. */
   onOpenCreature: (id: number) => void;
   onDiscard: () => void;
+  /**
+   * The photograph's own colour, for the panel the name sits on beside it.
+   * Only used on a wide screen, where the two stand side by side; on a narrow
+   * one the name lies over the photograph and the panel is not drawn.
+   */
+  tone?: Tone;
 };
 
 /** A group of creatures is "mammals"; a single one is "mammal". */
@@ -77,6 +84,7 @@ export function DetailView({
   onOpenGallery,
   onOpenMap,
   onOpenCreature,
+  tone,
   onDiscard,
 }: DetailViewProps) {
   const hero = creature.photos[0] ?? null;
@@ -110,7 +118,14 @@ export function DetailView({
     <div className="view detail" id={`creature-${creature.id}`}>
       {/* The photograph is the page's front door: full bleed, unframed, with
           the name laid over it and the sheet of facts riding up underneath. */}
-      <header className="hero">
+      <header
+        className="hero"
+        style={
+          tone
+            ? ({ '--tone-base': tone.base, '--tone-deep': tone.deep } as React.CSSProperties)
+            : undefined
+        }
+      >
         {hero ? (
           <img className="hero-photo" src={hero.url} alt={creature.name} />
         ) : (

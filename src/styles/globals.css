@@ -2132,3 +2132,54 @@ button {
     display: block;
   }
 }
+
+/* ── the split hero (wide screens) ────────────────────────────────────── */
+
+/* From the design (node 433:1575): the photograph takes the left of the hero
+   and the name stands beside it on a panel, rather than lying over the picture.
+   The panel's colour is the photograph's own, sampled on the server — see
+   features/creatures/server/tone.ts — so it belongs to the animal in it.
+
+   Below the breakpoint nothing here applies and the name goes back over the
+   photograph, which is the layout in the narrow design. */
+
+@media (min-width: 901px) {
+  .hero {
+    display: grid;
+    /* 436/398 of the 834 the design is drawn at. minmax(0,…) or the panel's
+       own text sets a floor under its column and takes width off the
+       photograph — fr honours min-content unless told not to. */
+    grid-template-columns: minmax(0, 52.3fr) minmax(0, 47.7fr);
+    aspect-ratio: 834 / 655;
+    max-height: 74vh;
+  }
+
+  .hero-photo {
+    height: 100%;
+  }
+
+  /* The scrim exists to carry white type over a photograph. Beside one, on a
+     panel of its own, it would only muddy the picture's edge. */
+  .hero-veil {
+    display: none;
+  }
+
+  .hero-text {
+    position: static;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-8);
+    background: linear-gradient(
+      to bottom,
+      var(--tone-base, #314669),
+      var(--tone-deep, #1d2e4a)
+    );
+  }
+
+  /* The buttons sat over the photograph; they stay there, not on the panel. */
+  .hero-gallery {
+    right: calc(47.7% + var(--space-3));
+  }
+}

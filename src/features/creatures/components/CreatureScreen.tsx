@@ -23,14 +23,18 @@ import { SaveMenu } from '@/features/library/components/SaveMenu';
 import { toStoredSummary } from '@/features/library/summary';
 import { useLibrary } from '@/features/library/useLibrary';
 import { useToast } from '@/hooks/useToast';
+import type { Tone } from '@/features/creatures/server/tone';
 import type { CreatureDetail } from '@/lib/types';
 
 export function CreatureScreen({
   creature,
   eyebrow,
+  tone,
   onSettle,
 }: {
   creature: CreatureDetail;
+  /** Sampled on the server from the photograph — see server/tone.ts. */
+  tone?: Tone;
   /** A line above the title, e.g. "Today's surprise". */
   eyebrow?: string;
   /**
@@ -108,6 +112,7 @@ export function CreatureScreen({
       <DetailView
         creature={creature}
         eyebrow={eyebrow}
+        tone={tone}
         savedCount={memberOf.length}
         backLabel="Back"
         // The surprise is where you start; there is nothing behind it.
