@@ -84,7 +84,12 @@ export type Surprise = {
  * @param accountId the signed-in user's id, or null while that is still being
  *   established — nobody's surprise is on offer until we know whose it is.
  */
-export function useSurprise(accountId: string | null): Surprise {
+/**
+ * Just which surprise is on offer and whether it has been dealt with — no
+ * creature, no request. The sidebar wants the unread dot and nothing else, and
+ * it should not cost a fetch to draw one.
+ */
+export function useSurpriseState(accountId: string | null) {
   const key = accountId ? `${STORAGE_PREFIX}:${accountId}` : null;
 
   const [stored, setStored] = useState<Stored | null>(null);
@@ -110,6 +115,22 @@ export function useSurprise(accountId: string | null): Surprise {
     if (ready && key && stored) write(key, stored);
   }, [stored, ready, key]);
 
+  const settle = useCallback(() => {
+    setStored((prev) =>
+      prev && prev.settledOn === null ? { ...prev, settledOn: todayKey() } : prev,
+    );
+  }, []);
+
+  return { stored, ready, settled: ready && stored?.settledOn != null, settle };
+}
+
+export function useSurprise(accountId: string | null): Surprise {
+  const { stored, ready, settled, settle } = useSurpriseState(accountId);
+
+  const [creature, setCreature] = useState<CreatureDetail | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const taxonId = ready && stored ? surpriseTaxonIdAt(stored.cursor) : null;
 
   useEffect(() => {
@@ -132,17 +153,5 @@ export function useSurprise(accountId: string | null): Surprise {
     return () => controller.abort();
   }, [taxonId]);
 
-  const settle = useCallback(() => {
-    setStored((prev) =>
-      prev && prev.settledOn === null ? { ...prev, settledOn: todayKey() } : prev,
-    );
-  }, []);
-
-  return {
-    creature,
-    loading,
-    error,
-    settled: ready && stored?.settledOn != null,
-    settle,
-  };
+  return { creature, loading, error, settled, settle };
 }

@@ -1,7 +1,7 @@
 /**
- * Shared shapes for everything the app moves between the server routes,
- * the views and localStorage. Deliberately flat and JSON-safe: a saved
- * creature is stored verbatim, so these types are also the storage schema.
+ * Shared shapes for everything the app moves between the server routes, the
+ * views and the store. Deliberately flat and JSON-safe: a saved creature is
+ * kept verbatim, so these types are also the storage schema.
  */
 
 export type Photo = {
@@ -127,3 +127,50 @@ export type LibraryState = {
 };
 
 export type View = 'surprise' | 'quiet' | 'results' | 'detail' | 'library';
+
+/* ── what a profile holds ─────────────────────────────────────────────── */
+
+/**
+ * A saved creature as the store holds it: membership by group id.
+ *
+ * `SavedCreature` above is the same thing as the views want it — membership by
+ * group *name*, because that is what a reader picked and what the sidebar
+ * prints. The two are deliberately separate: names are the reader's handle and
+ * change under them, ids are what the store keys on and never move.
+ * `useLibrary` is where one becomes the other.
+ */
+export type StoredCreature = {
+  creature: CreatureSummary;
+  groupIds: string[];
+  savedAt: number;
+};
+
+/**
+ * A group has an id of its own rather than being known by its name. Renaming
+ * is then one write, instead of rewriting every creature that sits in it, and
+ * two people can hold groups of the same name without colliding.
+ */
+export type Group = {
+  id: string;
+  name: string;
+  /** Epoch millis, so it survives JSON. */
+  createdAt: number;
+};
+
+/** One search a reader ran, kept against their profile. */
+export type SearchRecord = {
+  id: string;
+  query: string;
+  at: number;
+  /** How many results came back, for spotting searches that found nothing. */
+  resultCount: number | null;
+};
+
+/** Which daily surprise a reader is on, and whether they have dealt with it. */
+export type SurpriseState = {
+  cursor: number;
+  /** UTC day this one arrived. */
+  servedOn: string;
+  /** UTC day it was saved or discarded; null while it is still waiting. */
+  settledOn: string | null;
+};
