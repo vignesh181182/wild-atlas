@@ -163,15 +163,12 @@ export function DetailView({
         ) : null}
 
         <div className="hero-text">
-          {eyebrow ? <span className="hero-eyebrow">{eyebrow}</span> : null}
-          {/* The name and what you can do about it, on one line. Only the one
-              action that matters keeps its words; the rest are their icons,
-              with a tooltip to name them. */}
-          <div className="hero-head">
-            <h2 className="hero-title">
-              {creature.name}
-              <span className="hero-sci">{creature.scientificName}</span>
-            </h2>
+          {/* What you can do about the creature rides on the top line, beside
+              the eyebrow, rather than competing with the name for room it does
+              not have. Only the one action that matters keeps its words; the
+              rest are their icons, with a tooltip to name them. */}
+          <div className="hero-topline">
+            {eyebrow ? <span className="hero-eyebrow">{eyebrow}</span> : null}
 
             <div className="detail-actions">
               <SoundButton creature={creature} />
@@ -186,6 +183,11 @@ export function DetailView({
               </button>
             </div>
           </div>
+
+          <h2 className="hero-title">
+            {creature.name}
+            <span className="hero-sci">{creature.scientificName}</span>
+          </h2>
           <p className="hero-definition">{definition(creature)}</p>
           {/* iNaturalist asks that the photographer travels with the
               photograph, so it sits in the flow rather than floating where it

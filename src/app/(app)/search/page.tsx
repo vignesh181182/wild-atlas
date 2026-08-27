@@ -4,8 +4,9 @@
  * Search, at its own address, with the query in the URL — so a search can be
  * linked to and survives a reload, the same reason a creature became a route.
  *
- * The field itself only appears here on narrow screens. Above the breakpoint
- * the shell already shows one, and a second would be one too many.
+ * The field lives here and nowhere else. It used to sit above every page on a
+ * wide screen, which put a search box on the surprise and on the groups where
+ * nobody was searching; the rail and the tab bar are how you reach this.
  */
 
 import { useUser } from '@clerk/nextjs';
@@ -27,7 +28,7 @@ function SearchScreen() {
 
   return (
     <>
-      <GlobalSearch className="topbar-narrow" />
+      <GlobalSearch />
 
       {query ? (
         <ResultsView

@@ -8,8 +8,6 @@
 
 import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
-import { Suspense } from 'react';
-import { GlobalSearch } from '@/features/search/components/GlobalSearch';
 import { BottomTabs } from '@/components/BottomTabs';
 import { SidebarContainer } from '@/components/SidebarContainer';
 import { TopBar } from '@/components/TopBar';
@@ -26,15 +24,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           first paint is already right. */}
       <SidebarContainer />
       <TopBar />
-      <main className="main">
-        {/* On a wide screen search lives above every page, as it did when the
-            app was one screen. Below the breakpoint the tab bar leads to
-            /search instead, which shows the field itself. */}
-        <Suspense fallback={null}>
-          <GlobalSearch className="topbar-wide" />
-        </Suspense>
-        {children}
-      </main>
+      <main className="main">{children}</main>
       <BottomTabs />
     </div>
   );

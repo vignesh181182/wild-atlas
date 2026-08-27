@@ -2117,19 +2117,6 @@ button {
   background: var(--color-surface);
 }
 
-/* The search field appears once: in the shell on a wide screen, on the search
-   page itself on a narrow one, where the tab bar is what leads to it. */
-.topbar-narrow {
-  display: none;
-}
-@media (max-width: 900px) {
-  .topbar-wide {
-    display: none;
-  }
-  .topbar-narrow {
-    display: block;
-  }
-}
 
 
 /* The frame the save menu hangs inside. It has to carry the window's height
@@ -2360,16 +2347,22 @@ button {
   }
 }
 
-/* The name and its actions share a line in the panel. */
-.hero-head {
+/* The top line of the panel: what this is on the left, what you can do about
+   it on the right, both sitting on the same top edge. */
+.hero-topline {
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-4);
   flex-wrap: wrap;
 }
-.hero-head .detail-actions {
+.hero-topline .detail-actions {
   flex: none;
+}
+/* Without an eyebrow there is nothing on the left, so the actions keep the
+   right-hand edge rather than sliding over to fill the line. */
+.hero-topline .detail-actions:only-child {
+  margin-left: auto;
 }
 
 @media (min-width: 901px) {
