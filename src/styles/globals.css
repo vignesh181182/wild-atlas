@@ -2282,3 +2282,91 @@ button {
     right: var(--space-3);
   }
 }
+
+/* ── the left menu, collapsed ─────────────────────────────────────────── */
+
+/* The design (node 433:1575) draws this lying along the bottom of a rotated
+   frame; stood back up it is a rail about one button wide — the mark at the
+   top, the three places to be beneath it, the account at the foot. It expands
+   to the full column of groups and remembers which way it was left.
+
+   Below 900px neither exists: the top bar and the tab bar are the menu. */
+
+.rail {
+  display: none;
+  width: 56px;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-2);
+  border-right: 1px solid var(--color-divider);
+}
+
+.rail-brand {
+  display: flex;
+  padding: var(--space-1);
+}
+.rail-brand img {
+  width: 26px;
+  height: 26px;
+}
+
+.rail-tabs,
+.rail-foot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* The account sits at the foot, below whatever the list leaves. */
+.rail-foot {
+  margin-top: auto;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-divider);
+  width: 100%;
+}
+
+.rail-tab {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text);
+  text-decoration: none;
+  cursor: pointer;
+}
+.rail-tab:hover {
+  background: var(--color-surface);
+}
+/* Brass and carrying white, the way the tab bar does on a narrow screen. */
+.rail-tab[aria-current='page'] {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.rail-toggle {
+  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+}
+
+/* The expanded column's header, with the way back to the rail. */
+.brand-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+.brand-collapse {
+  flex: none;
+}
+
+@media (min-width: 901px) {
+  .rail {
+    display: flex;
+  }
+}

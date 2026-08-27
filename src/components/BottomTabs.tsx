@@ -11,20 +11,14 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FolderIcon, GiftIcon, SearchIcon } from '@/components/icons';
-
-const TABS = [
-  { href: '/', label: "Today's surprise", Icon: GiftIcon, match: (p: string) => p === '/' },
-  { href: '/search', label: 'Search', Icon: SearchIcon, match: (p: string) => p.startsWith('/search') },
-  { href: '/groups', label: 'Groups', Icon: FolderIcon, match: (p: string) => p.startsWith('/groups') },
-];
+import { NAV } from '@/components/nav';
 
 export function BottomTabs() {
   const pathname = usePathname();
 
   return (
     <nav className="tabbar" aria-label="Main">
-      {TABS.map(({ href, label, Icon, match }) => {
+      {NAV.map(({ href, label, Icon, match }) => {
         const active = match(pathname);
         return (
           <Link

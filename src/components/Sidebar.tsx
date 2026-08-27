@@ -17,6 +17,9 @@ type SidebarProps = {
   surpriseActive: boolean;
   surpriseUnread: boolean;
   onNotify: (message: string) => void;
+  /** Folds the column back to the rail. Absent below the breakpoint, where
+      there is no rail to fold to. */
+  onCollapse?: () => void;
 };
 
 /**
@@ -36,6 +39,7 @@ export function Sidebar({
   surpriseActive,
   surpriseUnread,
   onNotify,
+  onCollapse,
 }: SidebarProps) {
   const [editing, setEditing] = useState(false);
   const [renaming, setRenaming] = useState<string | null>(null);
@@ -75,10 +79,36 @@ export function Sidebar({
     <aside className="sidebar">
       {/* The emblem alone here — the sidebar already sets the name in type,
           and the full lockup would repeat it at a size too small to read. */}
-      <h1 className="brand">
-        <Image src={emblem} alt="" aria-hidden sizes="34px" />
-        Wild Atlas
-      </h1>
+      <div className="brand-row">
+        <h1 className="brand">
+          <Image src={emblem} alt="" aria-hidden sizes="34px" />
+          Wild Atlas
+        </h1>
+        {onCollapse ? (
+          <button
+            type="button"
+            className="icon-btn brand-collapse"
+            onClick={onCollapse}
+            aria-label="Collapse the menu"
+            data-tip="Collapse the menu"
+            data-tip-place="left"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.25"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M10 3.5 5.5 8 10 12.5" />
+            </svg>
+          </button>
+        ) : null}
+      </div>
 
       <button
         type="button"
