@@ -115,21 +115,24 @@ export function DetailView({
   ].filter((section) => section.shown);
 
   return (
-    <div className="view detail" id={`creature-${creature.id}`}>
+    <div
+      className="view detail"
+      id={`creature-${creature.id}`}
+      /* On the page rather than on the hero: the facts sit beside the hero,
+         not inside it, and need the same colours to inherit down to them. */
+      style={
+        tone
+          ? ({
+              '--tone-base': tone.base,
+              '--tone-deep': tone.deep,
+              '--tone-ink': tone.ink,
+            } as React.CSSProperties)
+          : undefined
+      }
+    >
       {/* The photograph is the page's front door: full bleed, unframed, with
           the name laid over it and the sheet of facts riding up underneath. */}
-      <header
-        className="hero"
-        style={
-          tone
-            ? ({
-                '--tone-base': tone.base,
-                '--tone-deep': tone.deep,
-                '--tone-ink': tone.ink,
-              } as React.CSSProperties)
-            : undefined
-        }
-      >
+      <header className="hero">
         {hero ? (
           <img className="hero-photo" src={hero.url} alt={creature.name} />
         ) : (
@@ -177,19 +180,38 @@ export function DetailView({
         </div>
       </header>
 
+      {/* What the creature is, and its figures. It sits between the photograph
+          and the reading so that either layout can have it: beneath the name
+          on a wide screen, where the design puts it, and at the head of the
+          sheet on a narrow one, where it already was. Moving it with CSS
+          rather than rendering it twice keeps one copy for anything reading
+          the page aloud. */}
+      <section className="facts">
+        <div className="tags">
+          <span className="tag">{creature.kind}</span>
+          {/* "Species" is already said by the line under the title; a rank is
+              only worth a tag when it is a group. */}
+          {isGroup(creature.rank) ? <span className="tag">{rankLabel(creature.rank)}</span> : null}
+          <StatusTag creature={creature} />
+          {creature.alsoCalled.length ? (
+            <span className="tag tag-quiet">Also called {creature.alsoCalled.join(' · ')}</span>
+          ) : null}
+        </div>
+
+        {figures.length >= 2 ? (
+          <dl className="figures">
+            {figures.map((figure) => (
+              <div className="figure" key={figure.label}>
+                <dd>{figure.value}</dd>
+                <dt>{figure.label}</dt>
+              </div>
+            ))}
+          </dl>
+        ) : null}
+      </section>
+
       <div className="sheet">
         <div className="sheet-top">
-          <div className="tags">
-            <span className="tag">{creature.kind}</span>
-            {/* "Species" is already said by the line under the title; a rank is
-                only worth a tag when it is a group. */}
-            {isGroup(creature.rank) ? <span className="tag">{rankLabel(creature.rank)}</span> : null}
-            <StatusTag creature={creature} />
-            {creature.alsoCalled.length ? (
-              <span className="tag tag-quiet">Also called {creature.alsoCalled.join(' · ')}</span>
-            ) : null}
-          </div>
-
           {/* Only the one action that matters keeps its words. The rest are
               their icons, with a tooltip to name them. */}
           <div className="detail-actions">
@@ -225,17 +247,6 @@ export function DetailView({
             </button>
           </div>
         </div>
-
-      {figures.length >= 2 ? (
-        <dl className="figures">
-          {figures.map((figure) => (
-            <div className="figure" key={figure.label}>
-              <dd>{figure.value}</dd>
-              <dt>{figure.label}</dt>
-            </div>
-          ))}
-        </dl>
-      ) : null}
 
       <SectionNav sections={sections} />
 

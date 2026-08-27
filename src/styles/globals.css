@@ -865,11 +865,20 @@ button {
 .sheet {
   position: relative;
   z-index: 1;
-  margin-top: -28px;
-  padding: var(--space-4) var(--space-6) 48px;
-  border-radius: 28px 28px 0 0;
+  padding: 0 var(--space-6) 48px;
   background: var(--color-bg);
   min-height: 60vh;
+}
+
+/* The facts now head the sheet, so they carry what the sheet's top used to:
+   the lift over the photograph and the rounded corners. */
+.facts {
+  position: relative;
+  z-index: 1;
+  margin-top: -28px;
+  padding: var(--space-4) var(--space-6) 0;
+  border-radius: 28px 28px 0 0;
+  background: var(--color-bg);
 }
 
 .sheet-top {
@@ -2172,15 +2181,48 @@ button {
     overflow: hidden;
   }
 
-  /* Left: photograph over panel, in the design's own 436/398. */
-  .hero {
+  /* Left: photograph, then the name, then the facts — all on one field of
+     colour. The gradient is on the hero rather than on each piece, or the two
+     would meet as a seam. */
+  .detail > .hero {
     grid-column: 1;
+    grid-row: 1;
     display: grid;
-    grid-template-rows: minmax(0, 436fr) minmax(0, 398fr);
+    grid-template-rows: minmax(0, 436fr) auto;
     aspect-ratio: auto;
     height: 100%;
     min-height: 0;
     max-height: none;
+  }
+
+  .detail {
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+
+  .detail > .facts {
+    grid-column: 1;
+    grid-row: 2;
+    margin: 0;
+    border-radius: 0;
+    padding: 0 var(--space-6) var(--space-4);
+    background: var(--tone-deep, #1d2e4a);
+    color: var(--tone-ink, #fff);
+  }
+
+  /* The figures are set for a page that scrolls; here they share a column with
+     a photograph that wants the room. */
+  .detail > .facts .figures {
+    gap: var(--space-3) var(--space-6);
+    margin: var(--space-3) 0 0;
+  }
+
+  /* The pills were outlined for a white sheet; on the panel they follow it. */
+  .detail > .facts .tag {
+    border-color: color-mix(in srgb, var(--tone-ink, #fff) 40%, transparent);
+    color: inherit;
+  }
+  .detail > .facts .figures dt {
+    color: color-mix(in srgb, var(--tone-ink, #fff) 72%, transparent);
   }
 
   .hero-photo {
@@ -2197,11 +2239,11 @@ button {
     position: static;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    gap: var(--space-2);
-    padding: var(--space-6);
+    justify-content: flex-end;
+    gap: var(--space-1);
+    /* Tight, because everything it takes comes off the photograph above it. */
+    padding: var(--space-4) var(--space-6) var(--space-2);
     min-height: 0;
-    overflow: auto;
     /* The photograph's own colour, sampled on the server. The text colour
        comes with it: a pale sand panel takes ink, a deep forest one takes
        white, and whichever it is clears 4.5:1 against the panel. */
@@ -2228,13 +2270,11 @@ button {
   /* Right: the reading, scrolling on its own so the picture stays put. */
   .sheet {
     grid-column: 2;
-    grid-row: 1;
+    grid-row: 1 / -1;
     height: 100%;
     min-height: 0;
     overflow-y: auto;
-    /* It rode up over the hero when it sat beneath one. Beside it, it does not. */
-    margin: 0;
-    border-radius: 0;
+    padding-top: var(--space-6);
   }
 
   /* Sat over the photograph's bottom-left; the panel is there now. */
