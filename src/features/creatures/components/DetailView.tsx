@@ -122,7 +122,11 @@ export function DetailView({
         className="hero"
         style={
           tone
-            ? ({ '--tone-base': tone.base, '--tone-deep': tone.deep } as React.CSSProperties)
+            ? ({
+                '--tone-base': tone.base,
+                '--tone-deep': tone.deep,
+                '--tone-ink': tone.ink,
+              } as React.CSSProperties)
             : undefined
         }
       >

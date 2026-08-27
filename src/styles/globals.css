@@ -2202,12 +2202,27 @@ button {
     padding: var(--space-6);
     min-height: 0;
     overflow: auto;
-    /* The photograph's own colour, sampled on the server. */
+    /* The photograph's own colour, sampled on the server. The text colour
+       comes with it: a pale sand panel takes ink, a deep forest one takes
+       white, and whichever it is clears 4.5:1 against the panel. */
     background: linear-gradient(
       to bottom,
       var(--tone-base, #314669),
       var(--tone-deep, #1d2e4a)
     );
+    color: var(--tone-ink, #fff);
+  }
+
+  /* These were white because they lay over a photograph. On the panel they
+     follow whatever can be read on it. */
+  .hero-text .hero-title,
+  .hero-text .hero-sci,
+  .hero-text .hero-definition {
+    color: inherit;
+  }
+  .hero-text .hero-eyebrow,
+  .hero-text .hero-credit {
+    color: color-mix(in srgb, var(--tone-ink, #fff) 70%, transparent);
   }
 
   /* Right: the reading, scrolling on its own so the picture stays put. */
