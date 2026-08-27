@@ -2100,3 +2100,17 @@ button {
 .group-index-row:hover {
   background: var(--color-surface);
 }
+
+/* The search field appears once: in the shell on a wide screen, on the search
+   page itself on a narrow one, where the tab bar is what leads to it. */
+.topbar-narrow {
+  display: none;
+}
+@media (max-width: 900px) {
+  .topbar-wide {
+    display: none;
+  }
+  .topbar-narrow {
+    display: block;
+  }
+}

@@ -1,57 +1,43 @@
 'use client';
 
 /**
- * Search, at its own address.
+ * Search, at its own address, with the query in the URL — so a search can be
+ * linked to and survives a reload, the same reason a creature became a route.
  *
- * The query lives in the URL rather than in component state, so a search can
- * be linked to and survives a reload — the same reason a creature became a
- * route. Typing replaces the entry rather than pushing, so the back button
- * leaves the search rather than walking back through every keystroke.
+ * The field itself only appears here on narrow screens. Above the breakpoint
+ * the shell already shows one, and a second would be one too many.
  */
 
+import { useUser } from '@clerk/nextjs';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
-import { ResultsView } from '@/features/search/components/ResultsView';
-import { SearchBar } from '@/features/search/components/SearchBar';
-import { useSearch } from '@/features/search/useSearch';
-import { useUser } from '@clerk/nextjs';
 import { useLibrary } from '@/features/library/useLibrary';
+import { GlobalSearch } from '@/features/search/components/GlobalSearch';
+import { ResultsView } from '@/features/search/components/ResultsView';
+import { useSearch } from '@/features/search/useSearch';
 
 function SearchScreen() {
   const router = useRouter();
   const params = useSearchParams();
-  const query = params.get('q') ?? '';
+  const query = (params.get('q') ?? '').trim();
 
   const { user } = useUser();
   const library = useLibrary(user?.id ?? null);
   const results = useSearch(query);
 
-  function setQuery(next: string) {
-    const q = next.trim();
-    router.replace(q ? `/search?q=${encodeURIComponent(q)}` : '/search');
-  }
-
   return (
     <>
-      <div className="topbar">
-        <SearchBar
-          value={query}
-          onChange={setQuery}
-          onClear={() => setQuery('')}
-          suggestions={(results.data ?? []).slice(0, 5)}
-          onPick={(creature) => router.push(`/creature/${creature.id}`)}
-        />
-      </div>
+      <GlobalSearch className="topbar-narrow" />
 
-      {query.trim() ? (
+      {query ? (
         <ResultsView
-          query={query.trim()}
+          query={query}
           results={results.data}
           loading={results.loading}
           error={results.error}
           isSaved={library.isSaved}
           onOpen={(creature) => router.push(`/creature/${creature.id}`)}
-          onClear={() => setQuery('')}
+          onClear={() => router.replace('/search')}
         />
       ) : (
         <div className="view">
