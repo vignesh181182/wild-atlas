@@ -22,10 +22,8 @@ import {
   BackIcon,
   BookmarkIcon,
   GridIcon,
-  MapIcon,
   PlayIcon,
   StopIcon,
-  TrashIcon,
 } from '@/components/icons';
 
 type DetailViewProps = {
@@ -43,7 +41,6 @@ type DetailViewProps = {
   onOpenMap: () => void;
   /** Opens another creature's page — an ancestor, or a relative. */
   onOpenCreature: (id: number) => void;
-  onDiscard: () => void;
   /**
    * The photograph's own colour, for the panel the name sits on beside it.
    * Only used on a wide screen, where the two stand side by side; on a narrow
@@ -85,7 +82,6 @@ export function DetailView({
   onOpenMap,
   onOpenCreature,
   tone,
-  onDiscard,
 }: DetailViewProps) {
   const hero = creature.photos[0] ?? null;
   const mapView = useMemo(() => fitToSightings(creature.sightings, 2.2), [creature.sightings]);
@@ -168,10 +164,28 @@ export function DetailView({
 
         <div className="hero-text">
           {eyebrow ? <span className="hero-eyebrow">{eyebrow}</span> : null}
-          <h2 className="hero-title">
-            {creature.name}
-            <span className="hero-sci">{creature.scientificName}</span>
-          </h2>
+          {/* The name and what you can do about it, on one line. Only the one
+              action that matters keeps its words; the rest are their icons,
+              with a tooltip to name them. */}
+          <div className="hero-head">
+            <h2 className="hero-title">
+              {creature.name}
+              <span className="hero-sci">{creature.scientificName}</span>
+            </h2>
+
+            <div className="detail-actions">
+              <SoundButton creature={creature} />
+              <button
+                type="button"
+                className="btn-accent"
+                data-filled={savedCount > 0}
+                onClick={(event) => onOpenSaveMenu(event.currentTarget.getBoundingClientRect())}
+              >
+                <BookmarkIcon filled={savedCount > 0} />
+                {savedCount ? `Saved · ${savedCount}` : 'Save to group'}
+              </button>
+            </div>
+          </div>
           <p className="hero-definition">{definition(creature)}</p>
           {/* iNaturalist asks that the photographer travels with the
               photograph, so it sits in the flow rather than floating where it
@@ -211,42 +225,6 @@ export function DetailView({
       </section>
 
       <div className="sheet">
-        <div className="sheet-top">
-          {/* Only the one action that matters keeps its words. The rest are
-              their icons, with a tooltip to name them. */}
-          <div className="detail-actions">
-            <SoundButton creature={creature} />
-            {creature.sightings.length ? (
-              <button
-                type="button"
-                className="btn-icon"
-                data-tip="See the map full screen"
-                aria-label="See the map full screen"
-                onClick={onOpenMap}
-              >
-                <MapIcon size={17} />
-              </button>
-            ) : null}
-            <button
-              type="button"
-              className="btn-icon"
-              data-tip={savedCount ? 'Discard and unsave' : 'Discard'}
-              aria-label={savedCount ? 'Discard and unsave' : 'Discard'}
-              onClick={onDiscard}
-            >
-              <TrashIcon size={17} />
-            </button>
-            <button
-              type="button"
-              className="btn-accent"
-              data-filled={savedCount > 0}
-              onClick={(event) => onOpenSaveMenu(event.currentTarget.getBoundingClientRect())}
-            >
-              <BookmarkIcon filled={savedCount > 0} />
-              {savedCount ? `Saved · ${savedCount}` : 'Save to group'}
-            </button>
-          </div>
-        </div>
 
       <SectionNav sections={sections} />
 

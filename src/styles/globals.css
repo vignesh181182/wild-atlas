@@ -2359,3 +2359,34 @@ button {
     display: flex;
   }
 }
+
+/* The name and its actions share a line in the panel. */
+.hero-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+.hero-head .detail-actions {
+  flex: none;
+}
+
+@media (min-width: 901px) {
+  /* 44px, as the design sets it. The 68px it reached over a full-width
+     photograph leaves no room beside it in a panel half that wide, which is
+     what pushed the buttons onto their own line. */
+  .hero-text .hero-title {
+    font-size: clamp(32px, 3vw, 44px);
+  }
+
+  /* On the panel the buttons follow whatever can be read on it, rather than
+     the outlines they wore for a white sheet. */
+  .hero-text .detail-actions .btn-icon {
+    border-color: color-mix(in srgb, var(--tone-ink, #fff) 34%, transparent);
+    color: inherit;
+  }
+  .hero-text .detail-actions .btn-icon:hover {
+    background: color-mix(in srgb, var(--tone-ink, #fff) 12%, transparent);
+  }
+}

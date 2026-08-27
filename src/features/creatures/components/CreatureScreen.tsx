@@ -95,18 +95,6 @@ export function CreatureScreen({
     );
   }
 
-  function discard() {
-    library.forget(creature.id);
-    closeOverlays();
-    if (onSettle) {
-      onSettle();
-      toast.flash('Surprise discarded — a new one arrives tomorrow');
-      return;
-    }
-    toast.flash(`${creature.name} discarded — nothing kept`);
-    router.back();
-  }
-
   return (
     <div className="creature-screen" ref={columnRef}>
       <DetailView
@@ -122,7 +110,6 @@ export function CreatureScreen({
         onOpenMap={() => setMapOpen(true)}
         // A relative or an ancestor is its own page now, with its own URL.
         onOpenCreature={(id) => router.push(`/creature/${id}`)}
-        onDiscard={discard}
       />
 
       {saveAnchor ? (
