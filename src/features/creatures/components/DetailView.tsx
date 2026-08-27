@@ -21,6 +21,7 @@ import { StatusTag, statusTone } from '@/features/creatures/components/StatusTag
 import {
   BackIcon,
   BookmarkIcon,
+  GiftIcon,
   GridIcon,
   PlayIcon,
   StopIcon,
@@ -148,10 +149,19 @@ export function DetailView({
           </button>
         ) : null}
 
+        {/* On the photograph, in its corners, as the design has them: what
+            this is on one side, how many pictures there are on the other. */}
+        {eyebrow ? (
+          <span className="hero-chip hero-surprise">
+            <GiftIcon size={16} />
+            {eyebrow}
+          </span>
+        ) : null}
+
         {creature.photos.length > 1 ? (
           <button
             type="button"
-            className="hero-btn hero-gallery"
+            className="hero-chip hero-gallery"
             data-tip={`See all ${creature.photos.length} photographs`}
             data-tip-place="left"
             aria-label={`All ${creature.photos.length} photos`}
@@ -168,8 +178,6 @@ export function DetailView({
               not have. Only the one action that matters keeps its words; the
               rest are their icons, with a tooltip to name them. */}
           <div className="hero-topline">
-            {eyebrow ? <span className="hero-eyebrow">{eyebrow}</span> : null}
-
             <div className="detail-actions">
               <SoundButton creature={creature} />
               <button

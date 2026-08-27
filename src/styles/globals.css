@@ -778,14 +778,44 @@ button {
   padding: var(--space-6) var(--space-6) calc(var(--space-6) + 28px);
   color: #fff;
 }
-.hero-eyebrow {
-  display: block;
-  margin-bottom: 6px;
+/* The two chips that sit on the photograph. The design gives them 8px
+   corners, 8px of padding and a translucent ground — dark under yellow for
+   what this is, light under black for how many pictures there are.
+
+   They take the top corners on a narrow screen, where the name lies across
+   the foot of the photograph, and the bottom corners on a wide one, where the
+   name has a panel of its own and the foot is free. */
+.hero-chip {
+  position: absolute;
+  top: var(--space-4);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  border: 0;
+  border-radius: 8px;
   font-family: var(--font-heading);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.hero-surprise {
+  left: var(--space-4);
+  padding: 4px 8px;
+  background: rgba(0, 0, 0, 0.6);
+  /* The design's yellow-200, which is the one place this colour appears. */
+  color: #fff085;
   font-size: 12px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.82);
+  cursor: default;
+}
+
+.hero-gallery {
+  right: var(--space-4);
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--color-text);
 }
 .hero-title {
   margin: 0;
@@ -854,9 +884,7 @@ button {
   left: var(--space-4);
   padding: 0;
 }
-.hero-gallery {
-  right: var(--space-4);
-}
+
 
 /* ── the sheet ───────────────────────────────────────────────────────── */
 
@@ -2201,9 +2229,19 @@ button {
     color: color-mix(in srgb, var(--tone-ink, #fff) 72%, transparent);
   }
 
+  /* Placed by hand, both of them. The chips claim row 1 explicitly, and
+     auto-placement answered that by pushing the photograph down into row 2
+     and the panel into an implicit third. */
   .hero-photo {
+    grid-row: 1;
+    grid-column: 1;
     height: 100%;
     min-height: 0;
+  }
+
+  .hero-text {
+    grid-row: 2;
+    grid-column: 1;
   }
 
   /* The scrim carries white type over a photograph. The panel does that now. */
@@ -2253,10 +2291,6 @@ button {
     padding-top: var(--space-6);
   }
 
-  /* Sat over the photograph's bottom-left; the panel is there now. */
-  .hero-gallery {
-    right: var(--space-3);
-  }
 }
 
 /* ── the left menu, collapsed ─────────────────────────────────────────── */
@@ -2381,5 +2415,30 @@ button {
   }
   .hero-text .detail-actions .btn-icon:hover {
     background: color-mix(in srgb, var(--tone-ink, #fff) 12%, transparent);
+  }
+}
+
+@media (min-width: 901px) {
+  /* The foot of the photograph is free here, and the design puts them there.
+     They are placed into the photograph's own cell rather than positioned
+     against the hero: the hero now runs on past the picture to hold the name,
+     so "bottom" against it is 200px below the photograph, over the panel. */
+  .hero-surprise,
+  .hero-gallery {
+    position: relative;
+    top: auto;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    grid-row: 1;
+    grid-column: 1;
+    align-self: end;
+    margin: var(--space-4);
+  }
+  .hero-surprise {
+    justify-self: start;
+  }
+  .hero-gallery {
+    justify-self: end;
   }
 }
