@@ -8,7 +8,9 @@
 
 import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
+import { BottomTabs } from '@/components/BottomTabs';
 import { SidebarContainer } from '@/components/SidebarContainer';
+import { TopBar } from '@/components/TopBar';
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const { userId } = await auth();
@@ -16,8 +18,14 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="app">
+      {/* Three shells' worth of furniture, two of which are hidden at any one
+          width: the sidebar above 900px, the bar and tabs below it. Which is
+          which is decided in CSS rather than by measuring the window, so the
+          first paint is already right. */}
       <SidebarContainer />
+      <TopBar />
       <main className="main">{children}</main>
+      <BottomTabs />
     </div>
   );
 }

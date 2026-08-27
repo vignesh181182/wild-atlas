@@ -28,10 +28,17 @@ import type { CreatureDetail } from '@/lib/types';
 export function CreatureScreen({
   creature,
   eyebrow,
+  onSettle,
 }: {
   creature: CreatureDetail;
   /** A line above the title, e.g. "Today's surprise". */
   eyebrow?: string;
+  /**
+   * Given only by the surprise, which is settled by being dealt with either
+   * way — kept or discarded. Its presence is also what says there is nothing
+   * behind this page to go back to.
+   */
+  onSettle?: () => void;
 }) {
   const router = useRouter();
   const { user } = useUser();
@@ -72,9 +79,14 @@ export function CreatureScreen({
 
   function toggleSaveInto(group: string) {
     const result = library.toggleSave(toStoredSummary(creature), group);
+    // Keeping the surprise settles it too — it has found its home.
+    const settles = result === 'added' && onSettle !== undefined;
+    if (settles) onSettle();
     toast.flash(
       result === 'added'
-        ? `Saved ${creature.name} to “${group}” — it will stay in your groups`
+        ? settles
+          ? `Saved ${creature.name} to “${group}” — your next surprise arrives tomorrow`
+          : `Saved ${creature.name} to “${group}” — it will stay in your groups`
         : `Removed ${creature.name} from “${group}”`,
     );
   }
@@ -82,6 +94,11 @@ export function CreatureScreen({
   function discard() {
     library.forget(creature.id);
     closeOverlays();
+    if (onSettle) {
+      onSettle();
+      toast.flash('Surprise discarded — a new one arrives tomorrow');
+      return;
+    }
     toast.flash(`${creature.name} discarded — nothing kept`);
     router.back();
   }
@@ -93,7 +110,8 @@ export function CreatureScreen({
         eyebrow={eyebrow}
         savedCount={memberOf.length}
         backLabel="Back"
-        onBack={() => router.back()}
+        // The surprise is where you start; there is nothing behind it.
+        onBack={onSettle ? undefined : () => router.back()}
         onOpenSaveMenu={openSaveMenuUnder}
         onOpenGallery={() => setGalleryOpen(true)}
         onOpenMap={() => setMapOpen(true)}

@@ -1986,3 +1986,117 @@ button {
   margin: 0 0 var(--space-4);
   color: color-mix(in srgb, var(--color-text) 68%, transparent);
 }
+
+/* ── the narrow shell ─────────────────────────────────────────────────── */
+
+/* Taken from the Figma design (node 396:1457): a 46px bar across the top with
+   the mark and the account in it, and three tabs floating over the foot. Both
+   are hidden on a wide screen, where the sidebar carries the same things and
+   showing them as well would say everything twice. */
+
+.topbar-app,
+.tabbar {
+  display: none;
+}
+
+.topbar-app {
+  height: 46px;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 7.2px;
+  text-decoration: none;
+  color: inherit;
+}
+.topbar-brand img {
+  width: 24px;
+  height: 24px;
+  flex: none;
+}
+.topbar-brand span {
+  font-family: var(--font-display);
+  font-size: 19px;
+  letter-spacing: -0.01em;
+}
+
+/* Floating, not docked: the reading column runs to the bottom edge behind it. */
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  gap: 8px;
+  padding: 0 16px 24px;
+  z-index: 40;
+}
+
+.tab {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--color-text);
+  box-shadow: 0 4px 2px rgba(0, 0, 0, 0.15);
+  text-decoration: none;
+}
+
+/* Brass, and carrying white, once you are on that tab. */
+.tab[aria-current='page'] {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+@media (max-width: 900px) {
+  .topbar-app,
+  .tabbar {
+    display: flex;
+  }
+
+  /* The bar and the tabs replace it outright here. */
+  .sidebar {
+    display: none;
+  }
+
+  .app {
+    flex-direction: column;
+  }
+
+  /* Clear the floating tabs, so the last line of a page is not under them. */
+  .main {
+    padding-bottom: 88px;
+  }
+}
+
+/* ── the groups index ─────────────────────────────────────────────────── */
+
+.group-index {
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--space-4);
+}
+
+.group-index-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: 52px;
+  padding: 0 var(--space-2);
+  border-bottom: 1px solid var(--color-divider);
+  text-decoration: none;
+  color: inherit;
+}
+.group-index-row:hover {
+  background: var(--color-surface);
+}
