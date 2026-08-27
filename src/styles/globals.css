@@ -2288,7 +2288,11 @@ button {
     height: 100%;
     min-height: 0;
     overflow-y: auto;
-    padding-top: var(--space-6);
+    /* No padding above: the nav is the first thing in here and sticks to
+       top: 0, which is measured from this box's padding edge — so any padding
+       here becomes a gap over the nav that never scrolls away. The nav brings
+       its own breathing room. */
+    padding-top: 0;
   }
 
 }
