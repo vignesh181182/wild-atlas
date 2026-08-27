@@ -1020,10 +1020,15 @@ button {
 
 /* ── reading column and rail ─────────────────────────────────────────── */
 
+/* One column. "Where it sits" and the country-by-country status used to ride
+   along in a sticky rail beside the reading, which meant they held a 300px
+   strip of the window for the whole page whether or not anyone was looking at
+   them. They are reference — worth having, not worth standing over the
+   reader — so they take their turn in the scroll instead. */
 .detail-columns {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px;
-  gap: var(--space-8);
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-6);
   align-items: start;
 }
 
@@ -1070,11 +1075,10 @@ button {
 
 /* The rail holds what you look up rather than what you read. */
 .detail-rail {
-  position: sticky;
-  top: 60px;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
+  /* Below the reading, not beside it, and going nowhere when the page moves. */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-4);
 }
 .rail-block {
   padding: var(--space-4);
@@ -1505,21 +1509,6 @@ button {
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
-}
-
-/* iPad and below: the rail stops being a rail and becomes two blocks under
-   the reading column. */
-@media (max-width: 1080px) {
-  .detail-columns {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-6);
-  }
-  .detail-rail {
-    position: static;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: var(--space-4);
-  }
 }
 
 @media (max-width: 760px) {
