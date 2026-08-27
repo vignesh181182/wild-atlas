@@ -716,13 +716,31 @@ button {
 .detail {
   padding: 0;
   scroll-behavior: smooth;
+  /* A creature's page is something to read, and an unbounded column set lines
+     over 1200px long. Capping it fixes the measure and, because the hero is
+     inside it, keeps the photograph near its own proportions too. */
+  width: 100%;
+  /* 960 is where the hero's own 834x555 proportions land at a height that
+     still leaves the sheet in view — so the photograph fills the column
+     exactly rather than sitting narrower than the panel beneath it. */
+  max-width: 960px;
+  margin-inline: auto;
 }
 
 /* ── the hero ────────────────────────────────────────────────────────── */
 
 .hero {
   position: relative;
-  height: clamp(320px, 52vh, 560px);
+  /* Proportions, not a fixed height. The design draws this at 834x555 — a
+     photograph's own shape, which is why nothing is cut there. Pinning the
+     height while leaving the width to grow turned the box into a 3:1 letterbox
+     on a wide window, and `cover` answered that by throwing away half the
+     picture. The ceiling stops a wide window from making it swallow the fold. */
+  aspect-ratio: 834 / 555;
+  height: auto;
+  min-height: 320px;
+  /* Only bites on a short window; the column width governs otherwise. */
+  max-height: 78vh;
   overflow: hidden;
   background: var(--color-neutral-200);
 }
