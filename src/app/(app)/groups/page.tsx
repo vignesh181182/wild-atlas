@@ -34,6 +34,13 @@ export default function GroupsPage() {
           </Link>
         ))}
       </div>
+
+      {/* Below 900px the sidebar is not rendered, so this is the only place
+          the way out is offered at all — and this page is one of the three
+          the tab bar reaches, which is what makes it the right one. */}
+      <a className="notebook-link is-standalone" href="/transfer">
+        Save a copy of your notebook
+      </a>
     </div>
   );
 }

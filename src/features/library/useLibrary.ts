@@ -24,8 +24,6 @@ const STORAGE_PREFIX = 'wild-atlas:library:v1';
  */
 const LEGACY_STORAGE_KEY = STORAGE_PREFIX;
 
-const DEFAULT_GROUPS = ['Favourites', 'Ocean trip', 'Dinosaurs', 'School project'];
-
 /**
  * The pseudo-group behind the sidebar's "All" row: everything kept, whichever
  * group it sits in. Not a real group — it is never stored, renamed or deleted.
@@ -34,7 +32,18 @@ const DEFAULT_GROUPS = ['Favourites', 'Ocean trip', 'Dinosaurs', 'School project
  */
 export const ALL_GROUP = ' all';
 
-const EMPTY: LibraryState = { groups: DEFAULT_GROUPS, saved: [] };
+/**
+ * A new reader starts with nothing, and that is deliberate. There were four
+ * example groups here — Favourites, Ocean trip, Dinosaurs, School project —
+ * and they were the first thing anybody saw: four empty folders somebody else
+ * had named, to be tidied away before the shelf was theirs. A reader who wants
+ * a group makes one, and the save menu and the sidebar both offer that at the
+ * point it is wanted.
+ *
+ * This is also what stands in before the stored library has been read, so it
+ * has to be the honest empty rather than a guess at what is coming.
+ */
+const EMPTY: LibraryState = { groups: [], saved: [] };
 
 function parse(raw: string | null): LibraryState | null {
   if (!raw) return null;

@@ -260,6 +260,14 @@ export function Sidebar({
         </div>
       </div>
 
+      {/* A notebook is kept in this browser and nowhere else, which is easy
+          not to realise until it matters — a new machine, a cleared cache. So
+          the way to take a copy is offered here rather than left to be asked
+          for, at the foot of the column beside whose notebook it is. */}
+      <a className="notebook-link" href="/transfer">
+        Save a copy of your notebook
+      </a>
+
       {/* Whose notebook this is, and the way out of it. Sits at the foot of
           the column, below whatever the groups list grows to. */}
       <div className="account">

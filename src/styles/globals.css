@@ -1966,6 +1966,17 @@ button {
     width: auto;
     max-width: none;
   }
+
+  /* Its own full-width row. The sidebar is a two-column grid here, and an
+     auto-placed item would otherwise take a cell beside the account rather
+     than a line of its own above it. The auto top margin goes with it: it
+     does the pinning in the flex column, and nothing useful in the grid. */
+  .notebook-link {
+    grid-column: 1 / -1;
+    margin-top: 0;
+    padding: 4px 0 0;
+  }
+
 }
 
 /* The narrow-screen group picker. Hidden by default: the full column has room
@@ -1979,8 +1990,31 @@ button {
 /* Pinned to the foot of the sidebar. `margin-top: auto` takes up whatever the
    groups list leaves behind, and collapses harmlessly once the list is long
    enough to scroll. */
-.account {
+/* Sits directly above the account, and takes the `margin-top: auto` that used
+   to push the account down — the two travel together at the foot of the
+   column, so the groups list still grows into the space above them. */
+/* On the groups page the link follows the list rather than being pinned to
+   the foot of a flex column — and below 900px, where the sidebar that
+   normally carries it is not rendered, that is the only copy of it there is. */
+.notebook-link.is-standalone {
+  display: block;
+  margin-top: var(--space-6);
+  padding: 0;
+}
+
+.notebook-link {
   margin-top: auto;
+  padding: 10px 4px;
+  color: var(--color-neutral-600);
+  font-size: 13px;
+  text-decoration: none;
+}
+.notebook-link:hover {
+  color: var(--color-text);
+  text-decoration: underline;
+}
+
+.account {
   padding-top: var(--space-3);
   border-top: 1px solid var(--color-divider);
 }
