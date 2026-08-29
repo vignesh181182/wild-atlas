@@ -731,6 +731,14 @@ button {
 
 .hero {
   position: relative;
+  /* Width first, so the aspect ratio derives the height from it and never the
+     other way about. Without this, `min-height` below is the only definite
+     size on the box and the ratio works backwards from it: 320px of height
+     asks for 481px of width, which is wider than a phone, and the reading
+     column scrolls sideways. Below about 481px the box simply gets taller
+     than the ratio, which the photograph absorbs — it is `cover` inside
+     `overflow: hidden`. */
+  width: 100%;
   /* Proportions, not a fixed height. The design draws this at 834x555 — a
      photograph's own shape, which is why nothing is cut there. Pinning the
      height while leaving the width to grow turned the box into a 3:1 letterbox
