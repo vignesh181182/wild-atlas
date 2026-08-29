@@ -41,6 +41,18 @@ export const metadata: Metadata = {
   title: 'Wild Atlas',
   description:
     'Search any living thing — animal, bird, insect, plant or extinct — read about it, and keep it in a group.',
+  // Saved to a home screen on an iPhone or iPad, the bookmark takes its emblem
+  // from app/apple-icon.png and its name from here. Without the name iOS falls
+  // back to whatever that page's own <title> was — "Sign in — Wild Atlas" for
+  // anyone who bookmarked from the door — and without the icon it draws a
+  // letter.
+  //
+  // `capable: false` is deliberate and worth saying out loud: left unset, Next
+  // writes apple-mobile-web-app-capable=yes for you, and the bookmark then
+  // opens with no Safari around it — no back gesture, no address bar, and a
+  // sign-in that leaves the window to reach Clerk with nowhere obvious to come
+  // back to.
+  appleWebApp: { title: 'Wild Atlas', capable: false },
 };
 
 export const viewport: Viewport = {
