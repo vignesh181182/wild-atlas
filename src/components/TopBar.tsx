@@ -9,7 +9,7 @@
  * everything twice.
  */
 
-import { UserButton } from '@clerk/nextjs';
+import { AccountButton } from '@/components/AccountButton';
 import Image from 'next/image';
 import Link from 'next/link';
 import emblem from '@/assets/wild-atlas-logo-emb.png';
@@ -21,7 +21,7 @@ export function TopBar() {
         <Image src={emblem} alt="" aria-hidden sizes="24px" />
         <span>Wild Atlas</span>
       </Link>
-      <UserButton />
+      <AccountButton />
     </header>
   );
 }

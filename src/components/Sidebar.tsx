@@ -1,6 +1,6 @@
 'use client';
 
-import { UserButton } from '@clerk/nextjs';
+import { AccountButton } from '@/components/AccountButton';
 import Image from 'next/image';
 import { useState } from 'react';
 import emblem from '@/assets/wild-atlas-logo-emb.png';
@@ -271,7 +271,7 @@ export function Sidebar({
       {/* Whose notebook this is, and the way out of it. Sits at the foot of
           the column, below whatever the groups list grows to. */}
       <div className="account">
-        <UserButton
+        <AccountButton
           showName
           appearance={{
             elements: {

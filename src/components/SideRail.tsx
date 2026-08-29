@@ -13,7 +13,7 @@
  * which way it was left.
  */
 
-import { UserButton } from '@clerk/nextjs';
+import { AccountButton } from '@/components/AccountButton';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -54,7 +54,7 @@ export function SideRail({ onExpand }: { onExpand: () => void }) {
         >
           <ChevronRight />
         </button>
-        <UserButton />
+        <AccountButton />
       </div>
     </nav>
   );
