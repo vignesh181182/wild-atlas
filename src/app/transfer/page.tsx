@@ -18,7 +18,8 @@
  * nothing it imports can break anything already there.
  */
 
-import { useEffect, useState } from 'react';
+import { useUser } from '@clerk/nextjs';
+import { useCallback, useEffect, useState } from 'react';
 
 /** Every notebook the app has ever written begins with this. */
 const PREFIX = 'wild-atlas:library:v1';
@@ -26,7 +27,17 @@ const PREFIX = 'wild-atlas:library:v1';
 type Row = { creature?: { name?: string }; groups?: string[] };
 type Notebook = { key: string; groups: string[]; saved: Row[]; text: string };
 
+type Sent =
+  | { status: 'idle' }
+  | { status: 'sending' }
+  | { status: 'kept'; saved: number; groups: number }
+  | { status: 'occupied' }
+  | { status: 'failed'; why: string };
+
 export default function TransferPage() {
+  const { isSignedIn, isLoaded } = useUser();
+  const [sent, setSent] = useState<Sent>({ status: 'idle' });
+  const [pasted, setPasted] = useState('');
   const [notebooks, setNotebooks] = useState<Notebook[] | null>(null);
   const [allKeys, setAllKeys] = useState<string[]>([]);
   const [origin, setOrigin] = useState('');
@@ -62,6 +73,42 @@ export default function TransferPage() {
     setOrigin(window.location.origin);
   }, []);
 
+  const send = useCallback(async (text: string) => {
+    let body: unknown;
+    try {
+      body = JSON.parse(text);
+    } catch {
+      setSent({ status: 'failed', why: 'That is not a notebook — paste the whole text.' });
+      return;
+    }
+    setSent({ status: 'sending' });
+    try {
+      const res = await fetch('/api/library', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) {
+        const err = (await res.json().catch(() => null)) as { error?: string } | null;
+        setSent({ status: 'failed', why: err?.error ?? `The server said ${res.status}.` });
+        return;
+      }
+      const done = (await res.json()) as { adopted: boolean; groups: unknown[]; saved: unknown[] };
+      // The server only fills an empty library, so a refusal is not a failure
+      // — it means something is already kept there. Saying so is the
+      // difference between trying again and believing this worked.
+      if (!done.adopted) {
+        setSent({ status: 'occupied' });
+        return;
+      }
+      setSent({ status: 'kept', saved: done.saved.length, groups: done.groups.length });
+    } catch {
+      setSent({ status: 'failed', why: 'The request never got there. Check the connection.' });
+    }
+  }, []);
+
+  const canSend = isLoaded && Boolean(isSignedIn) && sent.status !== 'sending';
+
   return (
     <main style={S.page}>
       <h1 style={S.title}>Save your notebook</h1>
@@ -83,15 +130,61 @@ export default function TransferPage() {
           <p style={S.muted}>This address holds: {allKeys.join(', ') || 'nothing at all'}</p>
         </div>
       ) : (
-        notebooks.map((n) => <Card key={n.key} notebook={n} onNote={setNote} />)
+        notebooks.map((n) => (
+          <Card
+            key={n.key}
+            notebook={n}
+            onNote={setNote}
+            canSend={canSend}
+            onSend={() => void send(n.text)}
+          />
+        ))
       )}
 
+      <section style={{ marginTop: 32 }}>
+        <h2 style={S.h2}>Bring a notebook back</h2>
+        <p style={S.muted}>
+          Paste a notebook saved from another device — it goes into your library, where every
+          device signed in as you can see it.
+        </p>
+        <textarea
+          style={S.text}
+          value={pasted}
+          onChange={(e) => setPasted(e.target.value)}
+          placeholder={'{"groups":[…],"saved":[…]}'}
+          rows={6}
+          spellCheck={false}
+        />
+        <button
+          type="button"
+          style={pasted.trim() && canSend ? S.primary : S.disabled}
+          disabled={!pasted.trim() || !canSend}
+          onClick={() => void send(pasted)}
+        >
+          Send to my library
+        </button>
+        {isLoaded && !isSignedIn ? (
+          <p style={S.muted}>Sign in first — a library belongs to an account.</p>
+        ) : null}
+      </section>
+
+      <Outcome sent={sent} />
       {note ? <p style={S.note}>{note}</p> : null}
     </main>
   );
 }
 
-function Card({ notebook, onNote }: { notebook: Notebook; onNote: (s: string) => void }) {
+function Card({
+  notebook,
+  onNote,
+  canSend,
+  onSend,
+}: {
+  notebook: Notebook;
+  onNote: (s: string) => void;
+  canSend: boolean;
+  onSend: () => void;
+}) {
   const [showText, setShowText] = useState(false);
   const name = `wild-atlas-${notebook.saved.length}-creatures.json`;
 
@@ -136,7 +229,15 @@ function Card({ notebook, onNote }: { notebook: Notebook; onNote: (s: string) =>
       <p style={S.muted}>{notebook.groups.join(' · ') || 'No groups'}</p>
 
       <div style={S.row}>
-        <button type="button" style={S.primary} onClick={download}>
+        <button
+          type="button"
+          style={canSend ? S.primary : S.disabled}
+          disabled={!canSend}
+          onClick={onSend}
+        >
+          Send to my library
+        </button>
+        <button type="button" style={S.quiet} onClick={download}>
           Save as a file
         </button>
         <button type="button" style={S.quiet} onClick={() => void copy()}>
@@ -162,6 +263,28 @@ function Card({ notebook, onNote }: { notebook: Notebook; onNote: (s: string) =>
   );
 }
 
+function Outcome({ sent }: { sent: Sent }) {
+  if (sent.status === 'idle') return null;
+  if (sent.status === 'sending') return <p style={S.note}>Sending…</p>;
+  if (sent.status === 'kept') {
+    return (
+      <p style={S.note}>
+        Kept — {sent.saved} {sent.saved === 1 ? 'creature' : 'creatures'} in {sent.groups}{' '}
+        {sent.groups === 1 ? 'group' : 'groups'}. They are on every device you sign in to now.
+      </p>
+    );
+  }
+  if (sent.status === 'occupied') {
+    return (
+      <p style={S.note}>
+        Your library already has creatures in it, so this was left alone rather than merged on top.
+        Nothing is lost — this browser still holds its copy.
+      </p>
+    );
+  }
+  return <p style={S.note}>{sent.why} Nothing is lost — this browser still holds its copy.</p>;
+}
+
 /* Inline, so this page cannot be affected by — or affect — the site's own
    stylesheet. Sized for a tablet, which is the device it exists for. */
 const S: Record<string, React.CSSProperties> = {
@@ -175,6 +298,11 @@ const S: Record<string, React.CSSProperties> = {
   primary: {
     minHeight: 48, padding: '0 20px', borderRadius: 10, border: '1px solid #b45309',
     background: '#b45309', color: '#fff', fontSize: 16, fontWeight: 600, cursor: 'pointer',
+  },
+  h2: { fontSize: 19, margin: '0 0 8px' },
+  disabled: {
+    minHeight: 48, padding: '0 20px', borderRadius: 10, border: '1px solid #d8d5d0',
+    background: '#efece8', color: '#9a948c', fontSize: 16, fontWeight: 600, cursor: 'not-allowed',
   },
   quiet: {
     minHeight: 48, padding: '0 16px', borderRadius: 10, border: '1px solid #d8d5d0',

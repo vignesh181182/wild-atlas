@@ -121,6 +121,11 @@ export type SavedCreature = {
   savedAt: number;
 };
 
+/**
+ * A whole library as the browser holds it. This was the localStorage shape
+ * before the profile had a server to keep it in, and it is still what a
+ * browser hands over when its old notebook is adopted into one.
+ */
 export type LibraryState = {
   groups: string[];
   saved: SavedCreature[];
@@ -155,6 +160,12 @@ export type Group = {
   name: string;
   /** Epoch millis, so it survives JSON. */
   createdAt: number;
+};
+
+/** A profile's library in one piece: the groups, and everything filed in them. */
+export type LibrarySnapshot = {
+  groups: Group[];
+  saved: StoredCreature[];
 };
 
 /** One search a reader ran, kept against their profile. */
