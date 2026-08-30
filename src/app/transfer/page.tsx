@@ -78,7 +78,10 @@ export default function TransferPage() {
     try {
       body = JSON.parse(text);
     } catch {
-      setSent({ status: 'failed', why: 'That is not a notebook — paste the whole text.' });
+      setSent({
+        status: 'failed',
+        why: 'That is not a notebook. It wants what is inside the file, not its name — open it and copy everything, or use “Choose a file”.',
+      });
       return;
     }
     setSent({ status: 'sending' });
@@ -155,14 +158,39 @@ export default function TransferPage() {
           rows={6}
           spellCheck={false}
         />
-        <button
-          type="button"
-          style={pasted.trim() && canSend ? S.primary : S.disabled}
-          disabled={!pasted.trim() || !canSend}
-          onClick={() => void send(pasted)}
-        >
-          Send to my library
-        </button>
+        <div style={S.row}>
+          <button
+            type="button"
+            style={pasted.trim() && canSend ? S.primary : S.disabled}
+            disabled={!pasted.trim() || !canSend}
+            onClick={() => void send(pasted)}
+          >
+            Send to my library
+          </button>
+          {/* The button above this section hands out a file, so a file is what
+              somebody coming back has. Asking them to open it, select 50,000
+              characters and paste them is a worse way to reach the same place
+              — and typing the file's name instead of its contents is the
+              obvious mistake to make when asked for text. */}
+          <label style={canSend ? S.quiet : S.disabled}>
+            Choose a file…
+            <input
+              type="file"
+              accept=".json,application/json"
+              disabled={!canSend}
+              style={{ display: 'none' }}
+              onChange={async (e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                const text = await file.text();
+                setPasted(text);
+                void send(text);
+                // Cleared, so choosing the same file twice fires again.
+                e.target.value = '';
+              }}
+            />
+          </label>
+        </div>
         {isLoaded && !isSignedIn ? (
           <p style={S.muted}>Sign in first — a library belongs to an account.</p>
         ) : null}
