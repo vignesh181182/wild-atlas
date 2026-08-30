@@ -19,11 +19,18 @@ export function GlobalSearch({ className }: { className?: string }) {
   const pathname = usePathname();
   const params = useSearchParams();
   const query = params.get('q') ?? '';
-  const results = useSearch(query);
+  // Trimmed to search, untrimmed to type into: a query of "snow " and one of
+  // "snow" are the same search, and asking twice would be a waste.
+  const results = useSearch(query.trim());
 
   function setQuery(next: string) {
-    const q = next.trim();
-    const url = q ? `/search?q=${encodeURIComponent(q)}` : '/search';
+    // The text goes to the URL as typed. It used to be trimmed on the way,
+    // which meant the space bar did not work: this field reads its own value
+    // back out of the URL, so a trailing space was removed before it could be
+    // read, and the next letter landed against the previous one — "snow
+    // leopard" arrived as "snowleopard". Only whether there is a search at all
+    // is decided by the trimmed form.
+    const url = next.trim() ? `/search?q=${encodeURIComponent(next)}` : '/search';
     // Refining a search replaces the entry, so the back button leaves the
     // search rather than walking back through every keystroke. Arriving at
     // one from a creature's page pushes, so back returns to the creature.
