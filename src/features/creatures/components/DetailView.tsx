@@ -173,25 +173,6 @@ export function DetailView({
         ) : null}
 
         <div className="hero-text">
-          {/* What you can do about the creature rides on the top line, beside
-              the eyebrow, rather than competing with the name for room it does
-              not have. Only the one action that matters keeps its words; the
-              rest are their icons, with a tooltip to name them. */}
-          <div className="hero-topline">
-            <div className="detail-actions">
-              <SoundButton creature={creature} />
-              <button
-                type="button"
-                className="btn-accent"
-                data-filled={savedCount > 0}
-                onClick={(event) => onOpenSaveMenu(event.currentTarget.getBoundingClientRect())}
-              >
-                <BookmarkIcon filled={savedCount > 0} />
-                {savedCount ? `Saved · ${savedCount}` : 'Save to group'}
-              </button>
-            </div>
-          </div>
-
           <h2 className="hero-title">
             {creature.name}
             <span className="hero-sci">{creature.scientificName}</span>
@@ -211,15 +192,37 @@ export function DetailView({
           rather than rendering it twice keeps one copy for anything reading
           the page aloud. */}
       <section className="facts">
-        <div className="tags">
-          <span className="tag">{creature.kind}</span>
-          {/* "Species" is already said by the line under the title; a rank is
-              only worth a tag when it is a group. */}
-          {isGroup(creature.rank) ? <span className="tag">{rankLabel(creature.rank)}</span> : null}
-          <StatusTag creature={creature} />
-          {creature.alsoCalled.length ? (
-            <span className="tag tag-quiet">Also called {creature.alsoCalled.join(' · ')}</span>
-          ) : null}
+        {/* The tags and what you can do about the creature share a line, which
+            is where the design has them: the pills run from the left, the
+            actions keep the right-hand edge. `.tags` was already `flex: 1`
+            and `.detail-actions` already `margin-left: auto` for exactly this
+            row — they were only ever missing the wrapper. */}
+        <div className="sheet-top">
+          <div className="tags">
+            <span className="tag">{creature.kind}</span>
+            {/* "Species" is already said by the line under the title; a rank is
+                only worth a tag when it is a group. */}
+            {isGroup(creature.rank) ? (
+              <span className="tag">{rankLabel(creature.rank)}</span>
+            ) : null}
+            <StatusTag creature={creature} />
+            {creature.alsoCalled.length ? (
+              <span className="tag tag-quiet">Also called {creature.alsoCalled.join(' · ')}</span>
+            ) : null}
+          </div>
+
+          <div className="detail-actions">
+            <SoundButton creature={creature} />
+            <button
+              type="button"
+              className="btn-accent"
+              data-filled={savedCount > 0}
+              onClick={(event) => onOpenSaveMenu(event.currentTarget.getBoundingClientRect())}
+            >
+              <BookmarkIcon filled={savedCount > 0} />
+              {savedCount ? `Saved · ${savedCount}` : 'Save'}
+            </button>
+          </div>
         </div>
 
         {figures.length >= 2 ? (
