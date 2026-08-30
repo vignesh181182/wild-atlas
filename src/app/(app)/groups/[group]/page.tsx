@@ -30,6 +30,7 @@ export default function GroupPage() {
       <LibraryView
         title={showingAll ? 'All' : group}
         rows={library.rowsIn(group)}
+        loading={!library.ready}
         emptyNote={
           showingAll
             ? 'Nothing kept yet — search for a creature and save it to a group.'

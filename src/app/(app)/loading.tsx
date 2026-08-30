@@ -1,18 +1,13 @@
 /**
- * What a reader sees while the shell is on its way.
+ * Shown while the shell resolves, for any page in here without one of its own.
  *
- * Every page in here is behind a session check the server has to make before
- * it can render anything, and on a phone over a slow connection that check is
- * long enough to sit on an empty screen wondering whether the tap registered.
- * Only the creature page had an answer to that; this gives one to the rest.
- *
- * Quiet on purpose — it is meant to be replaced within a moment, and a spinner
- * that flashes is worse than a page that simply arrives.
+ * Every page behind this layout waits on a session check the server makes
+ * before it can render, which on a phone is long enough to sit looking at
+ * nothing. A shape is a better answer than a blank: it says where the page
+ * will be.
  */
+import { PageSkeleton } from '@/components/skeletons';
+
 export default function Loading() {
-  return (
-    <div className="view" aria-busy="true">
-      <p className="empty-note">Loading…</p>
-    </div>
-  );
+  return <PageSkeleton />;
 }

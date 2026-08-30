@@ -16,6 +16,7 @@ import { useSharedLibrary } from '@/features/library/LibraryProvider';
 import { GlobalSearch } from '@/features/search/components/GlobalSearch';
 import { ResultsView } from '@/features/search/components/ResultsView';
 import { useSearch } from '@/features/search/useSearch';
+import { LibraryRowsSkeleton } from '@/components/skeletons';
 
 function SearchScreen() {
   const router = useRouter();
@@ -52,7 +53,15 @@ function SearchScreen() {
 export default function SearchPage() {
   // useSearchParams needs a boundary so the shell can still be prerendered.
   return (
-    <Suspense fallback={<div className="status-note">Loading…</div>}>
+    <Suspense
+      fallback={
+        <div className="view">
+          <div className="skeleton" style={{ height: 52, borderRadius: 12 }} />
+          <div style={{ height: 20 }} />
+          <LibraryRowsSkeleton rows={4} />
+        </div>
+      }
+    >
       <SearchScreen />
     </Suspense>
   );

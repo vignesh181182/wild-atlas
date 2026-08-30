@@ -3,6 +3,7 @@
 import type { SavedCreature } from '@/lib/types';
 import { Plate } from '@/features/creatures/components/Plate';
 import { OpenIcon, TrashIcon } from '@/components/icons';
+import { LibraryRowsSkeleton } from '@/components/skeletons';
 
 type LibraryViewProps = {
   /** What the page is called — a group's name, or "All". */
@@ -10,21 +11,36 @@ type LibraryViewProps = {
   rows: SavedCreature[];
   /** Shown in place of the rows when there are none. */
   emptyNote: string;
+  /** True while the shelf is still on its way — an empty list is not yet news. */
+  loading?: boolean;
   onOpen: (creatureId: number) => void;
   onRemove: (creatureId: number) => void;
 };
 
-export function LibraryView({ title, rows, emptyNote, onOpen, onRemove }: LibraryViewProps) {
+export function LibraryView({
+  title,
+  rows,
+  emptyNote,
+  loading = false,
+  onOpen,
+  onRemove,
+}: LibraryViewProps) {
   return (
     <div className="view">
       <div className="page-head">
         <h2 className="page-title">{title}</h2>
-        <span className="page-meta">
-          {rows.length} {rows.length === 1 ? 'creature' : 'creatures'}
-        </span>
+        {loading ? (
+          <span className="page-meta">counting…</span>
+        ) : (
+          <span className="page-meta">
+            {rows.length} {rows.length === 1 ? 'creature' : 'creatures'}
+          </span>
+        )}
       </div>
 
-      {rows.length === 0 ? (
+      {loading && rows.length === 0 ? (
+        <LibraryRowsSkeleton />
+      ) : rows.length === 0 ? (
         <div className="empty-note">{emptyNote}</div>
       ) : (
         <div className="rows">

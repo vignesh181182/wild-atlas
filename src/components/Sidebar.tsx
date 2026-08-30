@@ -1,6 +1,7 @@
 'use client';
 
 import { AccountButton } from '@/components/AccountButton';
+import { SidebarGroupsSkeleton } from '@/components/skeletons';
 import Image from 'next/image';
 import { useState } from 'react';
 import emblem from '@/assets/wild-atlas-logo-emb.png';
@@ -162,6 +163,10 @@ export function Sidebar({
           </button>
         </div>
 
+        {/* Until the shelf is in hand there is nothing honest to list: an
+            empty column would say the reader has no groups, which is a
+            different thing from not knowing yet. */}
+        {!library.ready ? <SidebarGroupsSkeleton /> : (
         <div className="group-list">
           {/* Everything kept, whichever group it is in. Not editable — it is
               not a group the user made. */}
@@ -237,6 +242,7 @@ export function Sidebar({
             );
           })}
         </div>
+        )}
 
         <div className="add-group">
           <input

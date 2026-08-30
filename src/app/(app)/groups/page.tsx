@@ -11,6 +11,7 @@ import { useUser } from '@clerk/nextjs';
 import Link from 'next/link';
 import { ALL_GROUP } from '@/features/library/useLibrary';
 import { useSharedLibrary } from '@/features/library/LibraryProvider';
+import { GroupIndexSkeleton } from '@/components/skeletons';
 
 export default function GroupsPage() {
   const { user } = useUser();
@@ -19,6 +20,9 @@ export default function GroupsPage() {
   return (
     <div className="view">
       <h2 className="view-title">Groups</h2>
+      {!library.ready ? (
+        <GroupIndexSkeleton />
+      ) : (
       <div className="group-index">
         <Link className="group-index-row" href={`/groups/${encodeURIComponent(ALL_GROUP)}`}>
           <span className="group-name">All</span>
@@ -35,6 +39,7 @@ export default function GroupsPage() {
           </Link>
         ))}
       </div>
+      )}
 
       {/* Below 900px the sidebar is not rendered, so this is the only place
           the way out is offered at all — and this page is one of the three

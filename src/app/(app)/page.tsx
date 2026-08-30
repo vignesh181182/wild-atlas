@@ -12,6 +12,7 @@
  */
 
 import { useUser } from '@clerk/nextjs';
+import { CreatureSkeleton } from '@/components/skeletons';
 import { CreatureScreen } from '@/features/creatures/components/CreatureScreen';
 import { QuietView } from '@/features/surprise/components/QuietView';
 import { useSurprise } from '@/features/surprise/useSurprise';
@@ -24,7 +25,7 @@ export default function SurprisePage() {
     return <QuietView note="Your next surprise arrives tomorrow." />;
   }
   if (surprise.loading) {
-    return <div className="status-note">Finding something for you…</div>;
+    return <CreatureSkeleton />;
   }
   if (surprise.error) {
     return (
