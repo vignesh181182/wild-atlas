@@ -21,7 +21,7 @@ import { GalleryOverlay } from '@/features/creatures/components/GalleryOverlay';
 import { MapOverlay } from '@/features/creatures/components/MapOverlay';
 import { SaveMenu } from '@/features/library/components/SaveMenu';
 import { toStoredSummary } from '@/features/library/summary';
-import { useLibrary } from '@/features/library/useLibrary';
+import { useSharedLibrary } from '@/features/library/LibraryProvider';
 import { useToast } from '@/hooks/useToast';
 import type { Tone } from '@/features/creatures/server/tone';
 import type { CreatureDetail } from '@/lib/types';
@@ -46,7 +46,7 @@ export function CreatureScreen({
 }) {
   const router = useRouter();
   const { user } = useUser();
-  const library = useLibrary(user?.id ?? null);
+  const library = useSharedLibrary();
   const toast = useToast();
 
   const [saveAnchor, setSaveAnchor] = useState<{ top: number; right: number } | null>(null);

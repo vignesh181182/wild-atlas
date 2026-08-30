@@ -9,11 +9,12 @@
 
 import { useUser } from '@clerk/nextjs';
 import Link from 'next/link';
-import { ALL_GROUP, useLibrary } from '@/features/library/useLibrary';
+import { ALL_GROUP } from '@/features/library/useLibrary';
+import { useSharedLibrary } from '@/features/library/LibraryProvider';
 
 export default function GroupsPage() {
   const { user } = useUser();
-  const library = useLibrary(user?.id ?? null);
+  const library = useSharedLibrary();
 
   return (
     <div className="view">

@@ -12,7 +12,7 @@
 import { useUser } from '@clerk/nextjs';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
-import { useLibrary } from '@/features/library/useLibrary';
+import { useSharedLibrary } from '@/features/library/LibraryProvider';
 import { GlobalSearch } from '@/features/search/components/GlobalSearch';
 import { ResultsView } from '@/features/search/components/ResultsView';
 import { useSearch } from '@/features/search/useSearch';
@@ -23,7 +23,7 @@ function SearchScreen() {
   const query = (params.get('q') ?? '').trim();
 
   const { user } = useUser();
-  const library = useLibrary(user?.id ?? null);
+  const library = useSharedLibrary();
   const results = useSearch(query);
 
   return (

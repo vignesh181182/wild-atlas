@@ -11,14 +11,15 @@
 import { useUser } from '@clerk/nextjs';
 import { useParams, useRouter } from 'next/navigation';
 import { LibraryView } from '@/features/library/components/LibraryView';
-import { ALL_GROUP, useLibrary } from '@/features/library/useLibrary';
+import { ALL_GROUP } from '@/features/library/useLibrary';
+import { useSharedLibrary } from '@/features/library/LibraryProvider';
 import { useToast } from '@/hooks/useToast';
 
 export default function GroupPage() {
   const router = useRouter();
   const params = useParams<{ group: string }>();
   const { user } = useUser();
-  const library = useLibrary(user?.id ?? null);
+  const library = useSharedLibrary();
   const toast = useToast();
 
   const group = decodeURIComponent(params.group);

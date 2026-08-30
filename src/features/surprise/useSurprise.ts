@@ -11,7 +11,6 @@
  */
 
 import { useCallback, useEffect, useState } from 'react';
-import { fetchCreature } from '@/lib/api-client';
 import {
   firstSurpriseCursor,
   nextSurpriseCursor,
@@ -19,7 +18,7 @@ import {
   todayKey,
 } from '@/features/surprise/surprise';
 import type { CreatureDetail } from '@/lib/types';
-import { primeCreatureCache } from '@/features/creatures/useCreature';
+import { loadCreature } from '@/features/creatures/useCreature';
 
 const STORAGE_PREFIX = 'wild-atlas:surprise:v2';
 
@@ -135,22 +134,26 @@ export function useSurprise(accountId: string | null): Surprise {
 
   useEffect(() => {
     if (taxonId === null) return;
-    const controller = new AbortController();
+    // Through the same loader the detail view uses, so the two of them asking
+    // for today's creature at once is one request and not two. It caches on
+    // the way, which is what priming used to do by hand here.
+    let listening = true;
     setLoading(true);
     setError(null);
-    fetchCreature(taxonId, controller.signal)
+    loadCreature(taxonId)
       .then((data) => {
-        // The reader is about to be looking straight at this.
-        primeCreatureCache(data);
+        if (!listening) return;
         setCreature(data);
         setLoading(false);
       })
       .catch((err: unknown) => {
-        if (controller.signal.aborted) return;
+        if (!listening) return;
         setError(err instanceof Error ? err.message : "Today's surprise is unavailable.");
         setLoading(false);
       });
-    return () => controller.abort();
+    return () => {
+      listening = false;
+    };
   }, [taxonId]);
 
   return { creature, loading, error, settled, settle };

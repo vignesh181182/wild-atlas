@@ -14,7 +14,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Sidebar } from '@/components/Sidebar';
 import { SideRail } from '@/components/SideRail';
-import { useLibrary } from '@/features/library/useLibrary';
+import { useSharedLibrary } from '@/features/library/LibraryProvider';
 import { useSurpriseState } from '@/features/surprise/useSurprise';
 import { useToast } from '@/hooks/useToast';
 
@@ -47,7 +47,7 @@ export function SidebarContainer() {
     }
   }
 
-  const library = useLibrary(accountId);
+  const library = useSharedLibrary();
   // State only: the unread dot should not cost a creature fetch.
   const surprise = useSurpriseState(accountId);
   const toast = useToast();
